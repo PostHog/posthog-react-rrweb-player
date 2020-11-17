@@ -8,12 +8,31 @@ import events from './recording'
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
+import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
 
 interface Props {}
 
-export class Player extends PureComponent<Props> {
+interface State {
+    playing: boolean
+    currentTime: number
+    meta: playerMetaData
+}
+
+export class Player extends PureComponent<Props, State> {
+    state: State = {
+        playing: false,
+        currentTime: 0,
+        meta: {
+            startTime: 0,
+            endTime: 0,
+            totalTime: 0
+        }
+    }
+
     frame: RefObject<HTMLDivElement> = createRef()
     replayer: Replayer
+    replayDimensions: viewportResizeDimention
+    timer: number
 
     componentDidMount() {
         if (this.frame.current) {
@@ -25,7 +44,18 @@ export class Player extends PureComponent<Props> {
 
             this.replayer.play()
 
+            window.addEventListener('resize', () =>
+                this.updatePlayerDimensions(this.replayDimensions)
+            )
             this.replayer.on('resize', this.updatePlayerDimensions)
+            this.replayer.on('start', this.startTimeLoop)
+            this.replayer.on('resume', this.startTimeLoop)
+            this.replayer.on('pause', this.stopTimeLoop)
+            this.replayer.on('finish', this.stopTimeLoop)
+
+            const meta = this.replayer.getMetaData()
+            this.setState({ meta })
+            this.updateTime()
 
             // @ts-ignore
             window.replayer = this.replayer
@@ -54,14 +84,28 @@ export class Player extends PureComponent<Props> {
         }
     }
 
-    updatePlayerDimensions = (replayDimensions: {
-        width: number
-        height: number
-    }) => {
+    updatePlayerDimensions = (replayDimensions: viewportResizeDimention) => {
+        this.replayDimensions = replayDimensions
         const { width } = this.frame.current!.getBoundingClientRect()
 
         const scale = Math.min(width / replayDimensions.width, 1)
         this.replayer.wrapper.style.transform = `scale(${scale})`
+    }
+
+    startTimeLoop = () => {
+        this.stopTimeLoop()
+        this.updateTime()
+    }
+
+    stopTimeLoop = () => {
+        cancelAnimationFrame(this.timer)
+    }
+
+    updateTime = () => {
+        const currentTime = this.replayer.getCurrentTime()
+        this.setState({ currentTime })
+
+        this.timer = requestAnimationFrame(this.updateTime)
     }
 
     render = () => (
@@ -69,7 +113,12 @@ export class Player extends PureComponent<Props> {
             <div className='ph-rrweb-frame' ref={this.frame} />
             <div className='ph-rrweb-bottom'>
                 <div className='ph-rrweb-progress'>
-                    <Slider max={1800} value={20} min={0} step={0.01} />
+                    <Slider
+                        value={this.state.currentTime}
+                        min={0}
+                        max={this.state.meta.totalTime}
+                        step={0.01}
+                    />
                 </div>
                 <div className='ph-rrweb-controller'>
                     <IconContext.Provider
