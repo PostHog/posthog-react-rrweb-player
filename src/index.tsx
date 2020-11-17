@@ -1,24 +1,18 @@
 import React, { createRef, PureComponent, RefObject } from 'react'
 import Slider from 'rc-slider/lib/Slider'
-import { FaPause, FaPlay } from 'react-icons/fa'
+import { FaBackward, FaPause, FaPlay } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
 import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
 
-import events from './recording'
 import { formatTime } from './time'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
-import './styles.css'
-import 'rc-slider/assets/index.css'
-import 'rrweb/dist/rrweb.min.css'
-import './styles.css'
-import 'rc-slider/assets/index.css'
-import 'rrweb/dist/rrweb.min.css'
 
-const JUMP_TIME_MS = 5_000
+const JUMP_TIME_MS = 8_000
+const events: any = JSON.parse(localStorage.getItem('session')!).result
 
 interface Props {}
 
@@ -123,9 +117,9 @@ export class Player extends PureComponent<Props, State> {
                 this.play()
             }
         } else if (event.key === 'ArrowLeft') {
-            this.seek(this.state.currentTime - JUMP_TIME_MS)
+            this.seek(this.state.currentTime - JUMP_TIME_MS / 2)
         } else if (event.key === 'ArrowRight') {
-            this.seek(this.state.currentTime + JUMP_TIME_MS)
+            this.seek(this.state.currentTime + JUMP_TIME_MS / 2)
         }
     }
 
@@ -152,6 +146,10 @@ export class Player extends PureComponent<Props, State> {
         if (!this.state.playing) {
             this.replayer.pause()
         }
+    }
+
+    seekBack = () => {
+        this.seek(this.state.currentTime - JUMP_TIME_MS)
     }
 
     render = () => (
@@ -187,6 +185,7 @@ export class Player extends PureComponent<Props, State> {
                         ) : (
                             <FaPlay onClick={this.pause} />
                         )}
+                        <FaBackward onClick={this.seekBack} />
                         {formatTime(this.state.currentTime)} /{' '}
                         {formatTime(this.state.meta.totalTime)}
                         <div />
