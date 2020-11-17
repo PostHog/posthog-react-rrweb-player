@@ -3,12 +3,20 @@ import Slider from 'rc-slider/lib/Slider'
 import { FaPlay } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
+import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
+
 import events from './recording'
+import { formatTime } from './time'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
-import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
+import './styles.css'
+import 'rc-slider/assets/index.css'
+import 'rrweb/dist/rrweb.min.css'
+import './styles.css'
+import 'rc-slider/assets/index.css'
+import 'rrweb/dist/rrweb.min.css'
 
 interface Props {}
 
@@ -42,7 +50,6 @@ export class Player extends PureComponent<Props, State> {
                 skipInactive: true
             })
 
-            this.replayer.play()
 
             window.addEventListener('resize', () =>
                 this.updatePlayerDimensions(this.replayDimensions)
@@ -53,8 +60,11 @@ export class Player extends PureComponent<Props, State> {
             this.replayer.on('pause', this.stopTimeLoop)
             this.replayer.on('finish', this.stopTimeLoop)
 
+
+            this.replayer.play()
+
             const meta = this.replayer.getMetaData()
-            this.setState({ meta })
+            this.setState({ playing: true, meta })
             this.updateTime()
 
             // @ts-ignore
@@ -108,6 +118,13 @@ export class Player extends PureComponent<Props, State> {
         this.timer = requestAnimationFrame(this.updateTime)
     }
 
+    seek = (time: number) => {
+        this.replayer.play(time)
+        if (!this.state.playing) {
+            this.replayer.pause()
+        }
+    }
+
     render = () => (
         <div className='ph-rrweb-wrapper'>
             <div className='ph-rrweb-frame' ref={this.frame} />
@@ -118,6 +135,7 @@ export class Player extends PureComponent<Props, State> {
                         min={0}
                         max={this.state.meta.totalTime}
                         step={0.01}
+                        onChange={this.seek}
                     />
                 </div>
                 <div className='ph-rrweb-controller'>
@@ -127,7 +145,7 @@ export class Player extends PureComponent<Props, State> {
                         }}
                     >
                         <FaPlay />
-                        00:00 / 01:56
+                        {formatTime(this.state.currentTime)} / {formatTime(this.state.meta.totalTime)}
                         <div />
                     </IconContext.Provider>
                 </div>
