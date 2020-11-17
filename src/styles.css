@@ -1,23 +1,36 @@
 .ph-rrweb-wrapper {
   height: 100%;
   width: 100%;
-
+  background-color: #ccc;
   display: flex;
-
   flex-direction: column;
 }
 
 .ph-rrweb-frame {
   height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ph-rrweb-frame .replayer-wrapper {
+  transform-origin: top left;
+}
+
+.ph-rrweb-frame iframe {
+  border: 0px;
+  background-color: white;
 }
 
 .ph-rrweb-bottom {
+  box-sizing: border-box;
   width: 100%;
   padding: 6px;
 
   background-color: #333;
   color: white;
   padding-bottom: 12px;
+
+  align-self: flex-end;
 }
 
 .ph-rrweb-progress {
