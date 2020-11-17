@@ -1,10 +1,12 @@
 import React from 'react'
 
-import { ExampleComponent } from 'posthog-react-rrweb-player'
+import { Player } from 'posthog-react-rrweb-player'
 import 'posthog-react-rrweb-player/dist/index.css'
 
-const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
-}
+const App = () => (
+  <div style={{ height: '90vh', width: '90vw' }}>
+    <Player />
+  </div>
+)
 
 export default App
