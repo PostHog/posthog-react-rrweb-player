@@ -1,6 +1,6 @@
 import React, { createRef, PureComponent, RefObject } from 'react'
 import Slider from 'rc-slider/lib/Slider'
-import { FaPlay } from 'react-icons/fa'
+import { FaPause, FaPlay } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
 import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
@@ -17,6 +17,8 @@ import 'rrweb/dist/rrweb.min.css'
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
+
+const JUMP_TIME_MS = 5_000
 
 interface Props {}
 
@@ -38,6 +40,7 @@ export class Player extends PureComponent<Props, State> {
     }
 
     frame: RefObject<HTMLDivElement> = createRef()
+    wrapper: RefObject<HTMLDivElement> = createRef()
     replayer: Replayer
     replayDimensions: viewportResizeDimention
     timer: number
@@ -50,7 +53,6 @@ export class Player extends PureComponent<Props, State> {
                 skipInactive: true
             })
 
-
             window.addEventListener('resize', () =>
                 this.updatePlayerDimensions(this.replayDimensions)
             )
@@ -59,7 +61,7 @@ export class Player extends PureComponent<Props, State> {
             this.replayer.on('resume', this.startTimeLoop)
             this.replayer.on('pause', this.stopTimeLoop)
             this.replayer.on('finish', this.stopTimeLoop)
-
+            this.replayer.on('finish', this.pause)
 
             this.replayer.play()
 
@@ -67,30 +69,32 @@ export class Player extends PureComponent<Props, State> {
             this.setState({ playing: true, meta })
             this.updateTime()
 
+            this.wrapper.current!.focus()
+
             // @ts-ignore
             window.replayer = this.replayer
 
-            const addHandler = (event: string) => {
-                this.replayer.on(event, (...args: any[]) =>
-                    console.log('replayer event:', event, args)
-                )
-            }
+            // const addHandler = (event: string) => {
+            //     this.replayer.on(event, (...args: any[]) =>
+            //         console.log('replayer event:', event, args)
+            //     )
+            // }
 
-            addHandler('start')
-            addHandler('pause')
-            addHandler('resume')
-            addHandler('resize')
-            addHandler('finish')
-            addHandler('fullsnapshot-rebuilded')
-            addHandler('load-stylesheet-start')
-            addHandler('load-stylesheet-end')
-            addHandler('skip-start')
-            addHandler('skip-end')
-            addHandler('mouse-interaction')
-            addHandler('event-cast')
-            addHandler('custom-event')
-            addHandler('flush')
-            addHandler('state-change')
+            // addHandler('start')
+            // addHandler('pause')
+            // addHandler('resume')
+            // addHandler('resize')
+            // addHandler('finish')
+            // addHandler('fullsnapshot-rebuilded')
+            // addHandler('load-stylesheet-start')
+            // addHandler('load-stylesheet-end')
+            // addHandler('skip-start')
+            // addHandler('skip-end')
+            // addHandler('mouse-interaction')
+            // addHandler('event-cast')
+            // addHandler('custom-event')
+            // addHandler('flush')
+            // addHandler('state-change')
         }
     }
 
@@ -111,6 +115,20 @@ export class Player extends PureComponent<Props, State> {
         cancelAnimationFrame(this.timer)
     }
 
+    handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === ' ') {
+            if (this.state.playing) {
+                this.pause()
+            } else {
+                this.play()
+            }
+        } else if (event.key === 'ArrowLeft') {
+            this.seek(this.state.currentTime - JUMP_TIME_MS)
+        } else if (event.key === 'ArrowRight') {
+            this.seek(this.state.currentTime + JUMP_TIME_MS)
+        }
+    }
+
     updateTime = () => {
         const currentTime = this.replayer.getCurrentTime()
         this.setState({ currentTime })
@@ -118,16 +136,36 @@ export class Player extends PureComponent<Props, State> {
         this.timer = requestAnimationFrame(this.updateTime)
     }
 
+    play = () => {
+        this.setState({ playing: true })
+        this.replayer.play(this.state.currentTime)
+    }
+
+    pause = () => {
+        this.setState({ playing: false })
+        this.replayer.pause()
+    }
+
     seek = (time: number) => {
         this.replayer.play(time)
+        this.setState({ currentTime: time })
         if (!this.state.playing) {
             this.replayer.pause()
         }
     }
 
     render = () => (
-        <div className='ph-rrweb-wrapper'>
-            <div className='ph-rrweb-frame' ref={this.frame} />
+        <div
+            className='ph-rrweb-wrapper'
+            ref={this.wrapper}
+            onKeyDown={this.handleKeyDown}
+            tabIndex={0}
+        >
+            <div
+                className='ph-rrweb-frame'
+                ref={this.frame}
+                onClick={this.state.playing ? this.pause : this.play}
+            />
             <div className='ph-rrweb-bottom'>
                 <div className='ph-rrweb-progress'>
                     <Slider
@@ -144,8 +182,13 @@ export class Player extends PureComponent<Props, State> {
                             className: 'ph-rrweb-controller-icon'
                         }}
                     >
-                        <FaPlay />
-                        {formatTime(this.state.currentTime)} / {formatTime(this.state.meta.totalTime)}
+                        {this.state.playing ? (
+                            <FaPause onClick={this.play} />
+                        ) : (
+                            <FaPlay onClick={this.pause} />
+                        )}
+                        {formatTime(this.state.currentTime)} /{' '}
+                        {formatTime(this.state.meta.totalTime)}
                         <div />
                     </IconContext.Provider>
                 </div>
