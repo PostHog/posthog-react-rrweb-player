@@ -6,6 +6,7 @@ import { Replayer } from 'rrweb'
 import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
 
 import { formatTime } from './time'
+import { PlayPauseOverlay } from './PlayPauseOverlay'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
@@ -17,6 +18,7 @@ const events: any = JSON.parse(localStorage.getItem('session')!).result
 interface Props {}
 
 interface State {
+    mounted: boolean,
     playing: boolean
     currentTime: number
     meta: playerMetaData
@@ -24,6 +26,7 @@ interface State {
 
 export class Player extends PureComponent<Props, State> {
     state: State = {
+        mounted: false,
         playing: false,
         currentTime: 0,
         meta: {
@@ -60,7 +63,7 @@ export class Player extends PureComponent<Props, State> {
             this.replayer.play()
 
             const meta = this.replayer.getMetaData()
-            this.setState({ playing: true, meta })
+            this.setState({ mounted: true, playing: true, meta })
             this.updateTime()
 
             this.wrapper.current!.focus()
@@ -163,7 +166,11 @@ export class Player extends PureComponent<Props, State> {
                 className='ph-rrweb-frame'
                 ref={this.frame}
                 onClick={this.state.playing ? this.pause : this.play}
-            />
+            >
+                <div className='ph-rrweb-overlay'>
+                    {this.state.mounted ? <PlayPauseOverlay playing={this.state.playing} /> : null}
+                </div>
+            </div>
             <div className='ph-rrweb-bottom'>
                 <div className='ph-rrweb-progress'>
                     <Slider
