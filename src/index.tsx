@@ -3,7 +3,7 @@ import Slider from 'rc-slider/lib/Slider'
 import { FaBackward, FaPause, FaPlay } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
-import { playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
+import { eventWithTime, playerMetaData, viewportResizeDimention } from 'rrweb/typings/types'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
@@ -13,9 +13,10 @@ import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
 
 const JUMP_TIME_MS = 8_000
-const events: any = JSON.parse(localStorage.getItem('session')!).result
 
-interface Props {}
+interface Props {
+    events: eventWithTime[]
+}
 
 interface State {
     playing: boolean
@@ -42,7 +43,7 @@ export class Player extends PureComponent<Props, State> {
 
     componentDidMount() {
         if (this.frame.current) {
-            this.replayer = new Replayer(events, {
+            this.replayer = new Replayer(this.props.events, {
                 root: this.frame.current,
                 speed: 4,
                 skipInactive: true
@@ -125,7 +126,10 @@ export class Player extends PureComponent<Props, State> {
     }
 
     updateTime = () => {
-        const currentTime = Math.min(this.replayer.getCurrentTime(), this.state.meta.totalTime)
+        const currentTime = Math.min(
+            this.replayer.getCurrentTime(),
+            this.state.meta.totalTime
+        )
         this.setState({ currentTime })
 
         this.timer = requestAnimationFrame(this.updateTime)
@@ -193,7 +197,6 @@ export class Player extends PureComponent<Props, State> {
                         <FaBackward onClick={this.seekBack} />
                         {formatTime(this.state.currentTime)} /{' '}
                         {formatTime(this.state.meta.totalTime)}
-                        <div />
                     </IconContext.Provider>
                 </div>
             </div>
