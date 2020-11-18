@@ -127,7 +127,7 @@ export class Player extends PureComponent<Props, State> {
     }
 
     updateTime = () => {
-        const currentTime = this.replayer.getCurrentTime()
+        const currentTime = Math.min(this.replayer.getCurrentTime(), this.state.meta.totalTime)
         this.setState({ currentTime })
 
         this.timer = requestAnimationFrame(this.updateTime)
