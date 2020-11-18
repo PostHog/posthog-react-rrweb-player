@@ -18,7 +18,6 @@ const events: any = JSON.parse(localStorage.getItem('session')!).result
 interface Props {}
 
 interface State {
-    mounted: boolean,
     playing: boolean
     currentTime: number
     meta: playerMetaData
@@ -26,8 +25,7 @@ interface State {
 
 export class Player extends PureComponent<Props, State> {
     state: State = {
-        mounted: false,
-        playing: false,
+        playing: true,
         currentTime: 0,
         meta: {
             startTime: 0,
@@ -63,7 +61,7 @@ export class Player extends PureComponent<Props, State> {
             this.replayer.play()
 
             const meta = this.replayer.getMetaData()
-            this.setState({ mounted: true, playing: true, meta })
+            this.setState({ playing: true, meta })
             this.updateTime()
 
             this.wrapper.current!.focus()
@@ -168,7 +166,7 @@ export class Player extends PureComponent<Props, State> {
                 onClick={this.state.playing ? this.pause : this.play}
             >
                 <div className='ph-rrweb-overlay'>
-                    {this.state.mounted ? <PlayPauseOverlay playing={this.state.playing} /> : null}
+                    <PlayPauseOverlay playing={this.state.playing} />
                 </div>
             </div>
             <div className='ph-rrweb-bottom'>
