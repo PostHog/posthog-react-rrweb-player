@@ -58,6 +58,11 @@
   cursor: pointer;
 }
 
+.ph-rrweb-speed-toggle {
+  cursor: pointer;
+  margin-right: 5px;
+}
+
 .ph-rrweb-overlay {
   position: absolute;
   left: 0;
@@ -71,7 +76,6 @@
 
   z-index: 10;
 }
-
 
 .ph-rrweb-play-pause-overlay {
   background-color: #333;

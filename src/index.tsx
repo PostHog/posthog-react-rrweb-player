@@ -9,6 +9,7 @@ import {
     playerMetaData,
     viewportResizeDimention
 } from 'rrweb/typings/types'
+import useLocalStorageState from 'use-local-storage-state/dist'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
@@ -32,6 +33,8 @@ export function Player(props: Props) {
         totalTime: 0
     })
 
+    const [speed, setSpeed] = useLocalStorageState('ph-rrweb-player-speed', 1)
+
     const frame = useRef<HTMLDivElement>(null)
     const wrapper = useRef<HTMLDivElement>(null)
 
@@ -43,8 +46,8 @@ export function Player(props: Props) {
         if (frame.current) {
             replayer.current = new Replayer(props.events, {
                 root: frame.current,
-                speed: 1,
-                skipInactive: true
+                skipInactive: true,
+                speed
             })
 
             window.addEventListener('resize', () =>
@@ -80,6 +83,12 @@ export function Player(props: Props) {
             return () => stopTimer()
         }
     }, [playing, meta])
+
+    useEffect(() => {
+        if (replayer.current) {
+            replayer.current.setConfig({ speed })
+        }
+    }, [speed])
 
     const stopTimer = () => {
         if (timer.current) {
@@ -201,6 +210,21 @@ export function Player(props: Props) {
                             {formatTime(meta.totalTime)}
                         </div>
                         <div style={{ justifyContent: 'flex-end' }}>
+                            {[1, 2, 4, 8, 16].map((speedToggle) => (
+                                <span
+                                    key={speedToggle}
+                                    className='ph-rrweb-speed-toggle'
+                                    style={{
+                                        fontWeight:
+                                            speedToggle === speed
+                                                ? 'bold'
+                                                : 'normal'
+                                    }}
+                                    onClick={() => setSpeed(speedToggle)}
+                                >
+                                    {speedToggle}x
+                                </span>
+                            ))}
                             {screenfull.isEnabled && (
                                 <FaExpand onClick={toggleFullScreen} />
                             )}
