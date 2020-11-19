@@ -10,4 +10,4 @@ const render = async(url: string) => {
     ReactDOM.render(<App events={result} />, document.getElementById('root'))
 }
 
-render('/broken-recording.json')
+render('/local-docs.json')
