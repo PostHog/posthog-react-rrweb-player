@@ -12,6 +12,8 @@ const makeOption = (value: string) => ({ value, label: value })
 const RECORDINGS = [
   makeOption('/docs.json'),
   makeOption('/local-docs.json'),
+  makeOption('/homepage.json'),
+  makeOption('/mobile-homepage.json')
 ]
 
 const App = () => {
