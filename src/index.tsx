@@ -128,6 +128,8 @@ export function Player(props: Props) {
             seek(currentTime - JUMP_TIME_MS / 2)
         } else if (event.key === 'ArrowRight') {
             seek(currentTime + JUMP_TIME_MS / 2)
+        } else if (event.key === 'f') {
+            toggleFullScreen()
         }
     }
 
