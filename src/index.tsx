@@ -4,11 +4,7 @@ import { FaBackward, FaExpand, FaPause, FaPlay } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
-import {
-    eventWithTime,
-    playerMetaData,
-    viewportResizeDimention
-} from 'rrweb/typings/types'
+import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 import useLocalStorageState from 'use-local-storage-state'
 
 import { formatTime } from './time'
@@ -17,6 +13,7 @@ import { PlayPauseOverlay } from './PlayPauseOverlay'
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
+import { PlayerFrame } from './PlayerFrame'
 
 const JUMP_TIME_MS = 8_000
 
@@ -39,8 +36,7 @@ export function Player(props: Props) {
     const frame = useRef<HTMLDivElement>(null)
     const wrapper = useRef<HTMLDivElement>(null)
 
-    const replayer = useRef<Replayer>()
-    const replayDimensionRef = useRef<viewportResizeDimention>()
+    const replayer = useRef<Replayer | null>(null)
     const timer = useRef<number>()
 
     useEffect(() => {
@@ -51,10 +47,6 @@ export function Player(props: Props) {
                 speed
             })
 
-            window.addEventListener('resize', () =>
-                updatePlayerDimensions(replayDimensionRef.current!)
-            )
-            replayer.current.on('resize', updatePlayerDimensions)
             replayer.current.on('finish', pause)
             replayer.current.on('skip-start', () => setSkipping(true))
             replayer.current.on('skip-end', () => setSkipping(false))
@@ -107,32 +99,6 @@ export function Player(props: Props) {
         setCurrentTime(currentTime)
 
         timer.current = requestAnimationFrame(updateTime)
-    }
-
-    // :TRICKY: Scale down the iframe and try to position it vertically
-    const updatePlayerDimensions = (
-        replayDimensions: viewportResizeDimention
-    ) => {
-        replayDimensionRef.current = replayDimensions
-        const {
-            width,
-            height
-        } = frame.current!.parentElement!.getBoundingClientRect()
-
-        const scale = Math.min(
-            width / replayDimensions.width,
-            height / replayDimensions.height,
-            1
-        )
-
-        replayer.current!.wrapper.style.transform = `scale(${scale})`
-        frame.current!.style.paddingLeft = `${
-            (width - replayDimensions.width * scale) / 2
-        }px`
-        frame.current!.style.paddingTop = `${
-            (height - replayDimensions.height * scale) / 2
-        }px`
-
     }
 
     const stopTimeLoop = () => {
@@ -195,7 +161,7 @@ export function Player(props: Props) {
             tabIndex={0}
         >
             <div className='ph-rrweb-player' onClick={playing ? pause : play}>
-                <div ref={frame} />
+                <PlayerFrame replayer={replayer.current} frame={frame} />
                 <div className='ph-rrweb-overlay'>
                     {skipping && (
                         <div className='ph-rrweb-skipping'>
