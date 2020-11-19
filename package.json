@@ -65,6 +65,7 @@
     "rc-slider": "^9.6.2",
     "react-icons": "^3.11.0",
     "react-transition-group": "^4.4.1",
-    "rrweb": "^0.9.9"
+    "rrweb": "^0.9.9",
+    "screenfull": "^5.0.2"
   }
 }

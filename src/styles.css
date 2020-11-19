@@ -43,8 +43,12 @@
 
 .ph-rrweb-controller {
   display: flex;
+}
+
+.ph-rrweb-controller > * {
+  flex: 1 0 0;
+  display: flex;
   align-items: center;
-  text-align: center;
 }
 
 .ph-rrweb-controller-icon {

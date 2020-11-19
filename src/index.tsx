@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Slider from 'rc-slider/lib/Slider'
-import { FaBackward, FaPause, FaPlay } from 'react-icons/fa'
+import { FaBackward, FaExpand, FaPause, FaPlay } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
+import screenfull from 'screenfull'
 import {
     eventWithTime,
     playerMetaData,
@@ -153,6 +154,12 @@ export function Player(props: Props) {
         seek(currentTime - JUMP_TIME_MS)
     }
 
+    const toggleFullScreen = () => {
+        if (screenfull.isEnabled && wrapper.current) {
+            screenfull.toggle(wrapper.current)
+        }
+    }
+
     return (
         <div
             className='ph-rrweb-wrapper'
@@ -185,13 +192,19 @@ export function Player(props: Props) {
                             className: 'ph-rrweb-controller-icon'
                         }}
                     >
-                        {playing ? (
-                            <FaPause onClick={pause} />
-                        ) : (
-                            <FaPlay onClick={play} />
-                        )}
-                        <FaBackward onClick={seekBack} />
-                        {formatTime(currentTime)} / {formatTime(meta.totalTime)}
+                        <div>
+                            {playing ? (
+                                <FaPause onClick={pause} />
+                            ) : (
+                                <FaPlay onClick={play} />
+                            )}
+                            <FaBackward onClick={seekBack} />
+                            {formatTime(currentTime)} /{' '}
+                            {formatTime(meta.totalTime)}
+                        </div>
+                        <div style={{ justifyContent: 'flex-end' }}>
+                            <FaExpand onClick={toggleFullScreen} />
+                        </div>
                     </IconContext.Provider>
                 </div>
             </div>
