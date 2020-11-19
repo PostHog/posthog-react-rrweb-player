@@ -109,14 +109,30 @@ export function Player(props: Props) {
         timer.current = requestAnimationFrame(updateTime)
     }
 
+    // :TRICKY: Scale down the iframe and try to position it vertically
     const updatePlayerDimensions = (
         replayDimensions: viewportResizeDimention
     ) => {
         replayDimensionRef.current = replayDimensions
-        const { width } = frame.current!.getBoundingClientRect()
+        const {
+            width,
+            height
+        } = frame.current!.parentElement!.getBoundingClientRect()
 
-        const scale = Math.min(width / replayDimensions.width, 1)
+        const scale = Math.min(
+            width / replayDimensions.width,
+            height / replayDimensions.height,
+            1
+        )
+
         replayer.current!.wrapper.style.transform = `scale(${scale})`
+        frame.current!.style.paddingLeft = `${
+            (width - replayDimensions.width * scale) / 2
+        }px`
+        frame.current!.style.paddingTop = `${
+            (height - replayDimensions.height * scale) / 2
+        }px`
+
     }
 
     const stopTimeLoop = () => {
@@ -178,11 +194,8 @@ export function Player(props: Props) {
             onKeyDown={handleKeyDown}
             tabIndex={0}
         >
-            <div
-                className='ph-rrweb-frame'
-                ref={frame}
-                onClick={playing ? pause : play}
-            >
+            <div className='ph-rrweb-player' onClick={playing ? pause : play}>
+                <div ref={frame} />
                 <div className='ph-rrweb-overlay'>
                     {skipping && (
                         <div className='ph-rrweb-skipping'>

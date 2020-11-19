@@ -6,7 +6,7 @@
   flex-direction: column;
 }
 
-.ph-rrweb-frame {
+.ph-rrweb-player {
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -14,11 +14,11 @@
   position: relative;
 }
 
-.ph-rrweb-frame .replayer-wrapper {
+.ph-rrweb-player .replayer-wrapper {
   transform-origin: top left;
 }
 
-.ph-rrweb-frame iframe {
+.ph-rrweb-player iframe {
   border: 0px;
   background-color: white;
 }
