@@ -141,6 +141,7 @@ export function Player(props: Props) {
     }
 
     const seek = (time: number) => {
+        time = Math.max(Math.min(time, meta.totalTime), 0)
         replayer.current!.play(time)
         setCurrentTime(time)
         if (!playing) {
