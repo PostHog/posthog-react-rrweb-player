@@ -51,10 +51,6 @@ export function Player(props: Props) {
                 updatePlayerDimensions(replayDimensionRef.current!)
             )
             replayer.current.on('resize', updatePlayerDimensions)
-            // replayer.current.on('start', startTimeLoop)
-            // replayer.current.on('resume', startTimeLoop)
-            // replayer.current.on('pause', stopTimeLoop)
-            // replayer.current.on('finish', stopTimeLoop)
             replayer.current.on('finish', pause)
 
             replayer.current.play()
