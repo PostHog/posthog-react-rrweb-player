@@ -205,7 +205,9 @@ export function Player(props: Props) {
                             {formatTime(meta.totalTime)}
                         </div>
                         <div style={{ justifyContent: 'flex-end' }}>
-                            <FaExpand onClick={toggleFullScreen} />
+                            {screenfull.isEnabled && (
+                                <FaExpand onClick={toggleFullScreen} />
+                            )}
                         </div>
                     </IconContext.Provider>
                 </div>
