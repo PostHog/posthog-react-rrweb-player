@@ -59,9 +59,6 @@ export function Player(props: Props) {
             setMeta(meta)
 
             wrapper.current!.focus()
-
-            // @ts-ignore
-            window.replayer = replayer.current
         }
 
         return () => {
