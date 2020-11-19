@@ -186,9 +186,9 @@ export function Player(props: Props) {
                         }}
                     >
                         {playing ? (
-                            <FaPause onClick={play} />
+                            <FaPause onClick={pause} />
                         ) : (
-                            <FaPlay onClick={pause} />
+                            <FaPlay onClick={play} />
                         )}
                         <FaBackward onClick={seekBack} />
                         {formatTime(currentTime)} / {formatTime(meta.totalTime)}
