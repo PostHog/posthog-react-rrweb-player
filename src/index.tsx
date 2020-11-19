@@ -9,7 +9,7 @@ import {
     playerMetaData,
     viewportResizeDimention
 } from 'rrweb/typings/types'
-import useLocalStorageState from 'use-local-storage-state/dist'
+import useLocalStorageState from 'use-local-storage-state'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
@@ -26,6 +26,7 @@ interface Props {
 
 export function Player(props: Props) {
     const [playing, setPlaying] = useState(true)
+    const [skipping, setSkipping] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
     const [meta, setMeta] = useState<playerMetaData>({
         startTime: 0,
@@ -55,6 +56,8 @@ export function Player(props: Props) {
             )
             replayer.current.on('resize', updatePlayerDimensions)
             replayer.current.on('finish', pause)
+            replayer.current.on('skip-start', () => setSkipping(true))
+            replayer.current.on('skip-end', () => setSkipping(false))
 
             replayer.current.play()
 
@@ -152,6 +155,7 @@ export function Player(props: Props) {
         time = Math.max(Math.min(time, meta.totalTime), 0)
         replayer.current!.play(time)
         setCurrentTime(time)
+        setSkipping(false)
         if (!playing) {
             replayer.current!.pause()
         }
@@ -180,6 +184,12 @@ export function Player(props: Props) {
                 onClick={playing ? pause : play}
             >
                 <div className='ph-rrweb-overlay'>
+                    {skipping && (
+                        <div className='ph-rrweb-skipping'>
+                            Skipping inactivity...
+                        </div>
+                    )}
+
                     <PlayPauseOverlay playing={playing} />
                 </div>
             </div>
