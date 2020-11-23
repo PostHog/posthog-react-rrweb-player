@@ -1,5 +1,7 @@
 import React, {
+    ForwardedRef,
     forwardRef,
+    RefObject,
     useEffect,
     useImperativeHandle,
     useRef,
@@ -18,6 +20,7 @@ import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
 import useLocalStorageState from 'use-local-storage-state'
 import { useDebouncedCallback } from 'use-debounce/lib'
+import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
