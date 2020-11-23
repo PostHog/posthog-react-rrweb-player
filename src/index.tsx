@@ -28,6 +28,7 @@ import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
 
 export { EventIndex } from './eventIndex'
+export { formatTime } from './time'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
