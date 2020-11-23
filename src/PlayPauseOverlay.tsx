@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FaPause, FaPlay } from 'react-icons/fa'
+import { IconPlay, IconPause } from './icons'
 import CSSTransition from 'react-transition-group/CSSTransition'
 
 interface Props {
@@ -23,7 +23,11 @@ export function PlayPauseOverlay({ playing }: Props): JSX.Element | null {
             onEntered={() => setShow(false)}
         >
             <div className='ph-rrweb-play-pause-overlay'>
-                {playing ? <FaPlay /> : <FaPause />}
+                {playing ? (
+                    <IconPlay className='ph-rrweb-play-pause-overlay-icon' />
+                ) : (
+                    <IconPause className='ph-rrweb-play-pause-overlay-icon' />
+                )}
             </div>
         </CSSTransition>
     )

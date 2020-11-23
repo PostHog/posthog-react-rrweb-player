@@ -52,10 +52,14 @@
 }
 
 .ph-rrweb-controller-icon {
-  margin-left: 2px;
   margin-right: 8px;
   font-size: 24px;
   cursor: pointer;
+  display: flex;
+}
+
+.ph-rrweb-controller-icon-play-pause { 
+  margin-right: 0px;
 }
 
 .ph-rrweb-speed-toggle {
@@ -116,4 +120,10 @@
   font-size: 40px;
   opacity: 0.6;
   transition: 400ms ease-in-out;
+}
+
+.ph-rrweb-play-pause-overlay-icon svg {
+  height: 48px;
+  width: 48px;
+  display: flex;
 }
