@@ -46,8 +46,6 @@ const App = () => {
           onChange={(recording) => setRecording(recording as any)}
         />
 
-        {playerTime}
-
         <pre>{JSON.stringify(pageEvent)}</pre>
       </div>
 
