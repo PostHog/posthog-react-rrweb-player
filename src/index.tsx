@@ -1,4 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {
+    ForwardedRef,
+    forwardRef,
+    RefObject,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState
+} from 'react'
 import Slider from 'rc-slider/lib/Slider'
 import {
     FaBackward,
@@ -30,12 +38,20 @@ const NOOP = () => {}
 
 interface Props {
     events: eventWithTime[]
-    onPlayerTimeChange?: (timestamp: number) => void
+    onPlayerTimeChange?: (playerTime: number) => void
     onPrevious?: () => void
     onNext?: () => void
 }
 
-export function Player(props: Props) {
+export interface PlayerRef {
+    replayer: RefObject<Replayer | null>
+    seek: (playerTime: number) => void
+}
+
+export const Player = forwardRef<PlayerRef, Props>(function Player(
+    props: Props,
+    ref: ForwardedRef<PlayerRef>
+) {
     const [playing, setPlaying] = useState(true)
     const [skipping, setSkipping] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
@@ -176,6 +192,8 @@ export function Player(props: Props) {
         }
     }
 
+    useImperativeHandle(ref, () => ({ replayer, seek }))
+
     return (
         <div
             className='ph-rrweb-wrapper'
@@ -254,4 +272,4 @@ export function Player(props: Props) {
             </div>
         </div>
     )
-}
+})
