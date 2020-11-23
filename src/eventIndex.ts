@@ -3,12 +3,13 @@ import sortedLastIndexBy from 'lodash.sortedlastindexby'
 
 export interface PageMetadata {
     href: string
+    playerTime: number
 }
 
 export class EventIndex {
     events: eventWithTime[]
     baseTime: number
-    _filterByCaches: { [key: string]: eventWithTime[] }
+    _filterByCaches: { [key: string]: any[] }
 
     constructor(events: eventWithTime[]) {
         this.events = events
@@ -28,17 +29,25 @@ export class EventIndex {
         if (index < 0 || index >= this.pageChangeEvents().length) {
             return null
         }
-        return this.pageChangeEvents()[index].data as PageMetadata
+        return this.pageChangeEvents()[index]
     }
 
-    pageChangeEvents = (): eventWithTime[] => {
-        return this._filterBy('href')
+    pageChangeEvents = (): PageMetadata[] => {
+        return this._filterBy('href', (event) => ({
+            href: (event.data as { href: string }).href,
+            playerTime: event.timestamp - this.baseTime
+        }))
     }
 
-    _filterBy = (dataKey: string): eventWithTime[] => {
+    _filterBy = <T>(
+        dataKey: string,
+        transformer: (e: eventWithTime) => T
+    ): T[] => {
         if (!this._filterByCaches[dataKey]) {
-            this._filterByCaches[dataKey] = this.events.filter(({ data }) => dataKey in data)
+            this._filterByCaches[dataKey] = this.events
+                .filter(({ data }) => dataKey in data)
+                .map(transformer)
         }
-        return this._filterByCaches[dataKey]
+        return this._filterByCaches[dataKey] as T[]
     }
 }
