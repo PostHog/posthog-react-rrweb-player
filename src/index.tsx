@@ -6,19 +6,24 @@ import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
 import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 import useLocalStorageState from 'use-local-storage-state'
+import { useDebouncedCallback } from 'use-debounce/lib'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
+import { PlayerFrame } from './PlayerFrame'
+
+export { EventIndex } from './eventIndex'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
-import { PlayerFrame } from './PlayerFrame'
 
 const JUMP_TIME_MS = 8_000
+const NOOP = () => {}
 
 interface Props {
     events: eventWithTime[]
+    onPlayerTimeChange?: (timestamp: number) => void
 }
 
 export function Player(props: Props) {
@@ -38,6 +43,16 @@ export function Player(props: Props) {
 
     const replayer = useRef<Replayer | null>(null)
     const timer = useRef<number>()
+
+    const setCurrentTimeDebounced = useDebouncedCallback(setCurrentTime, 10, {
+        maxWait: 100
+    }).callback
+
+    const onPlayerTimeChangeDebounced = useDebouncedCallback(
+        props.onPlayerTimeChange || NOOP,
+        300,
+        { maxWait: 1000 }
+    ).callback
 
     useEffect(() => {
         if (frame.current) {
@@ -93,7 +108,8 @@ export function Player(props: Props) {
             replayer.current!.getCurrentTime(),
             meta.totalTime
         )
-        setCurrentTime(currentTime)
+        setCurrentTimeDebounced(currentTime)
+        onPlayerTimeChangeDebounced(currentTime)
 
         timer.current = requestAnimationFrame(updateTime)
     }
@@ -133,7 +149,8 @@ export function Player(props: Props) {
     const seek = (time: number) => {
         time = Math.max(Math.min(time, meta.totalTime), 0)
         replayer.current!.play(time)
-        setCurrentTime(time)
+        setCurrentTimeDebounced(time)
+        onPlayerTimeChangeDebounced(time)
         setSkipping(false)
         if (!playing) {
             replayer.current!.pause()

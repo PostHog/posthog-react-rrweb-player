@@ -1,38 +1,44 @@
-import { EventType, eventWithTime } from 'rrweb/typings/types'
+import { eventWithTime } from 'rrweb/typings/types'
 import sortedLastIndexBy from 'lodash.sortedlastindexby'
 
 export interface PageMetadata {
     href: string
-    width: number
-    height: number
 }
 
 export class EventIndex {
     events: eventWithTime[]
-    _cachedMetadataEvents: eventWithTime[]
+    baseTime: number
+    _filterByCaches: { [key: string]: eventWithTime[] }
 
     constructor(events: eventWithTime[]) {
         this.events = events
+        this.baseTime = events.length > 0 ? events[0].timestamp : 0
+        this._filterByCaches = {}
     }
 
-    getMetadata = (timestamp: number): PageMetadata | null => {
+    getPageMetadata = (playerTime: number): PageMetadata | null => {
+        const timestamp = playerTime + this.baseTime
         const index =
             sortedLastIndexBy(
-                this.metadataEvents(),
+                this.pageChangeEvents(),
                 { timestamp } as any,
                 'timestamp'
             ) - 1
 
-        if (index < 0 && index >= this.metadataEvents().length) {
+        if (index < 0 || index >= this.pageChangeEvents().length) {
             return null
         }
-        return this.metadataEvents()[index].data as PageMetadata
+        return this.pageChangeEvents()[index].data as PageMetadata
     }
 
-    metadataEvents = (): eventWithTime[] => {
-        this._cachedMetadataEvents =
-            this._cachedMetadataEvents ||
-            this.events.filter(({ type }) => type === EventType.Meta)
-        return this._cachedMetadataEvents
+    pageChangeEvents = (): eventWithTime[] => {
+        return this._filterBy('href')
+    }
+
+    _filterBy = (dataKey: string): eventWithTime[] => {
+        if (!this._filterByCaches[dataKey]) {
+            this._filterByCaches[dataKey] = this.events.filter(({ data }) => dataKey in data)
+        }
+        return this._filterByCaches[dataKey]
     }
 }

@@ -20,6 +20,7 @@ const App = () => {
   const [events, setEvents] = useState<eventWithTime[]>([])
   const [recording, setRecording] = useLocalStorageState('recording', RECORDINGS[0])
   const [activeRecording, setActiveRecording] = useState(recording)
+  const [playerTime, setCurrentPlayerTime] = useState(0)
 
   useEffect(() => {
       async function fetchRecording() {
@@ -33,7 +34,8 @@ const App = () => {
     fetchRecording()
   }, [recording])
 
-  const eventIndex = useMemo(() => new EventIndex(events), [events])
+  const eventIndex: EventIndex = useMemo(() => new EventIndex(events), [events])
+  const pageEvent = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
 
   return (
     <div style={{ height: '90vh', width: '90vw' }}>
@@ -43,11 +45,15 @@ const App = () => {
           value={recording}
           onChange={(recording) => setRecording(recording as any)}
         />
+
+        {playerTime}
+
+        <pre>{JSON.stringify(pageEvent)}</pre>
       </div>
 
       <br />
 
-      {events.length > 0 && <Player events={events} key={activeRecording.value} />}
+      {events.length > 0 && <Player events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} />}
     </div>
   )
 }
