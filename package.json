@@ -31,9 +31,11 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^25.1.4",
+    "@types/lodash.sortedlastindexby": "^4.6.6",
     "@types/node": "^12.12.38",
     "@types/react": "^16.9.27",
     "@types/react-dom": "^16.9.7",
+    "@types/react-transition-group": "^4.4.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.0.3",
@@ -61,12 +63,13 @@
     "dist"
   ],
   "dependencies": {
-    "@types/react-transition-group": "^4.4.0",
+    "lodash.sortedlastindexby": "^4.6.0",
     "rc-slider": "^9.6.2",
     "react-icons": "^3.11.0",
     "react-transition-group": "^4.4.1",
     "rrweb": "^0.9.9",
     "screenfull": "^5.0.2",
+    "use-debounce": "^5.1.0",
     "use-local-storage-state": "^6.0.0"
   }
 }

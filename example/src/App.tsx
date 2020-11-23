@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
-import { Player } from 'posthog-react-rrweb-player'
+import { EventIndex, Player } from 'posthog-react-rrweb-player'
 import useLocalStorageState from 'use-local-storage-state'
 import Select from 'react-select'
 import { eventWithTime } from 'rrweb/typings/types'
@@ -32,6 +32,8 @@ const App = () => {
 
     fetchRecording()
   }, [recording])
+
+  const eventIndex = useMemo(() => new EventIndex(events), [events])
 
   return (
     <div style={{ height: '90vh', width: '90vw' }}>
