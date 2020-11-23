@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { EventIndex, Player } from 'posthog-react-rrweb-player'
+import { EventIndex, Player, PlayerRef } from 'posthog-react-rrweb-player'
 import useLocalStorageState from 'use-local-storage-state'
 import Select from 'react-select'
 import { eventWithTime } from 'rrweb/typings/types'
@@ -22,6 +22,8 @@ const App = () => {
   const [activeRecording, setActiveRecording] = useState(recording)
   const [playerTime, setCurrentPlayerTime] = useState(0)
 
+  const playerRef = useRef<PlayerRef>(null)
+
   useEffect(() => {
       async function fetchRecording() {
         const response = await fetch(recording.value)
@@ -35,7 +37,8 @@ const App = () => {
   }, [recording])
 
   const eventIndex: EventIndex = useMemo(() => new EventIndex(events), [events])
-  const pageEvent = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
+  const [pageEvent, atPageIndex] = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
+  const pageVisitEvents = useMemo(() => eventIndex.pageChangeEvents(), [eventIndex])
 
   return (
     <div>
@@ -52,8 +55,17 @@ const App = () => {
       <br />
 
       <div style={{ height: '80vh', width: '90vw' }}>
-        {events.length > 0 && <Player events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} onNext={() => {}} />}
+        {events.length > 0 && <Player ref={playerRef} events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} onNext={() => {}} />}
       </div>
+
+      <ul style={{ width: '30vw' }}>
+        {pageVisitEvents.map((event, index) => (
+          <li>
+            <button onClick={() => playerRef.current && playerRef.current.seek(event.playerTime)}>Visited {event.href}</button>
+            {index === atPageIndex ? ' (Active)' : null}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

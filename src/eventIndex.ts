@@ -17,7 +17,7 @@ export class EventIndex {
         this._filterByCaches = {}
     }
 
-    getPageMetadata = (playerTime: number): PageMetadata | null => {
+    getPageMetadata = (playerTime: number): [PageMetadata, number] | [null, -1] => {
         const timestamp = playerTime + this.baseTime
         const index =
             sortedLastIndexBy(
@@ -27,9 +27,9 @@ export class EventIndex {
             ) - 1
 
         if (index < 0 || index >= this.pageChangeEvents().length) {
-            return null
+            return [null, -1]
         }
-        return this.pageChangeEvents()[index]
+        return [this.pageChangeEvents()[index], index]
     }
 
     pageChangeEvents = (): PageMetadata[] => {
@@ -44,6 +44,7 @@ export class EventIndex {
         transformer: (e: eventWithTime) => T
     ): T[] => {
         if (!this._filterByCaches[dataKey]) {
+            console.log(this.events.filter(({ data }) => dataKey in data))
             this._filterByCaches[dataKey] = this.events
                 .filter(({ data }) => dataKey in data)
                 .map(transformer)
