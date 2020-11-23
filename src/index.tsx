@@ -153,6 +153,7 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             } else {
                 play()
             }
+            event.preventDefault()
         } else if (event.key === 'ArrowLeft') {
             seek(currentTime - JUMP_TIME_MS / 2)
         } else if (event.key === 'ArrowRight') {
