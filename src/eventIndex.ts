@@ -1,5 +1,4 @@
 import { eventWithTime } from 'rrweb/typings/types'
-import sortedLastIndexBy from 'lodash.sortedlastindexby'
 
 export interface PageMetadata {
     href: string
@@ -17,14 +16,12 @@ export class EventIndex {
         this._filterByCaches = {}
     }
 
-    getPageMetadata = (playerTime: number): [PageMetadata, number] | [null, -1] => {
-        const timestamp = playerTime + this.baseTime
-        const index =
-            sortedLastIndexBy(
-                this.pageChangeEvents(),
-                { timestamp } as any,
-                'timestamp'
-            ) - 1
+    getPageMetadata = (
+        playerTime: number
+    ): [PageMetadata, number] | [null, -1] => {
+        const index = this.pageChangeEvents().findIndex(
+            (event) => event.playerTime >= playerTime
+        )
 
         if (index < 0 || index >= this.pageChangeEvents().length) {
             return [null, -1]
@@ -44,7 +41,6 @@ export class EventIndex {
         transformer: (e: eventWithTime) => T
     ): T[] => {
         if (!this._filterByCaches[dataKey]) {
-            console.log(this.events.filter(({ data }) => dataKey in data))
             this._filterByCaches[dataKey] = this.events
                 .filter(({ data }) => dataKey in data)
                 .map(transformer)
