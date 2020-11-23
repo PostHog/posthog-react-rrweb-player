@@ -1,7 +1,5 @@
 import React, {
-    ForwardedRef,
     forwardRef,
-    RefObject,
     useEffect,
     useImperativeHandle,
     useRef,
@@ -18,20 +16,18 @@ import {
 } from './icons'
 import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
-import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 import useLocalStorageState from 'use-local-storage-state'
 import { useDebouncedCallback } from 'use-debounce/lib'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
-
-export { EventIndex } from './eventIndex'
-export { formatTime } from './time'
-
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
+
+export { EventIndex } from './eventIndex'
+export { formatTime } from './time'
 
 const JUMP_TIME_MS = 8_000
 const NOOP = () => {}
