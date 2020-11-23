@@ -9,30 +9,28 @@ import React, {
 } from 'react'
 import Slider from 'rc-slider/lib/Slider'
 import {
-    FaBackward,
-    FaExpand,
-    FaPause,
-    FaPlay,
-    FaStepBackward,
-    FaStepForward
-} from 'react-icons/fa'
-import { IconContext } from 'react-icons'
+    IconPlay,
+    IconSeekBack,
+    IconStepBackward,
+    IconStepForward,
+    IconFullscreen,
+    IconPause
+} from './icons'
 import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
-import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 import useLocalStorageState from 'use-local-storage-state'
 import { useDebouncedCallback } from 'use-debounce/lib'
+import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
-
-export { EventIndex } from './eventIndex'
-export { formatTime } from './time'
-
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
+
+export { EventIndex } from './eventIndex'
+export { formatTime } from './time'
 
 const JUMP_TIME_MS = 8_000
 const NOOP = () => {}
@@ -226,50 +224,52 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                     />
                 </div>
                 <div className='ph-rrweb-controller'>
-                    <IconContext.Provider
-                        value={{
-                            className: 'ph-rrweb-controller-icon'
-                        }}
-                    >
-                        <div>
-                            {playing ? (
-                                <FaPause onClick={pause} />
-                            ) : (
-                                <FaPlay onClick={play} />
-                            )}
-                            <FaBackward onClick={seekBack} />
+                    <div>
+                        {playing ? (
+                            <IconPause
+                                onClick={pause}
+                                className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
+                            />
+                        ) : (
+                            <IconPlay
+                                onClick={play}
+                                className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
+                            />
+                        )}
+                        <IconSeekBack onClick={seekBack} />
+                        <span className='ph-rrweb-timestamp'>
                             {formatTime(currentTime)} /{' '}
                             {formatTime(meta.totalTime)}
-                        </div>
-                        <div style={{ justifyContent: 'center' }}>
-                            {props.onPrevious && (
-                                <FaStepBackward onClick={props.onPrevious} />
-                            )}
-                            {props.onNext && (
-                                <FaStepForward onClick={props.onNext} />
-                            )}
-                        </div>
-                        <div style={{ justifyContent: 'flex-end' }}>
-                            {[1, 2, 4, 8, 16].map((speedToggle) => (
-                                <span
-                                    key={speedToggle}
-                                    className='ph-rrweb-speed-toggle'
-                                    style={{
-                                        fontWeight:
-                                            speedToggle === speed
-                                                ? 'bold'
-                                                : 'normal'
-                                    }}
-                                    onClick={() => setSpeed(speedToggle)}
-                                >
-                                    {speedToggle}x
-                                </span>
-                            ))}
-                            {screenfull.isEnabled && (
-                                <FaExpand onClick={toggleFullScreen} />
-                            )}
-                        </div>
-                    </IconContext.Provider>
+                        </span>
+                    </div>
+                    <div style={{ justifyContent: 'center' }}>
+                        {props.onPrevious && (
+                            <IconStepBackward onClick={props.onPrevious} />
+                        )}
+                        {props.onNext && (
+                            <IconStepForward onClick={props.onNext} />
+                        )}
+                    </div>
+                    <div style={{ justifyContent: 'flex-end' }}>
+                        {[1, 2, 4, 8, 16].map((speedToggle) => (
+                            <span
+                                key={speedToggle}
+                                className='ph-rrweb-speed-toggle'
+                                style={{
+                                    fontWeight:
+                                        speedToggle === speed
+                                            ? 'bold'
+                                            : 'normal'
+                                }}
+                                onClick={() => setSpeed(speedToggle)}
+                            >
+                                {speedToggle}x
+                            </span>
+                        ))}
+                        {screenfull.isEnabled && (
+                            <IconFullscreen onClick={toggleFullScreen} />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
