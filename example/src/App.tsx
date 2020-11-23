@@ -38,7 +38,7 @@ const App = () => {
   const pageEvent = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
 
   return (
-    <div style={{ height: '90vh', width: '90vw' }}>
+    <div>
       <div style={{ zIndex: 100 }}>
         <Select
           options={RECORDINGS}
@@ -51,7 +51,9 @@ const App = () => {
 
       <br />
 
-      {events.length > 0 && <Player events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} />}
+      <div style={{ height: '80vh', width: '90vw' }}>
+        {events.length > 0 && <Player events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} />}
+      </div>
     </div>
   )
 }
