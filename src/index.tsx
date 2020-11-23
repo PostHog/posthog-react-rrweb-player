@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Slider from 'rc-slider/lib/Slider'
-import { FaBackward, FaExpand, FaPause, FaPlay } from 'react-icons/fa'
+import {
+    FaBackward,
+    FaExpand,
+    FaPause,
+    FaPlay,
+    FaStepBackward,
+    FaStepForward
+} from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
@@ -24,6 +31,8 @@ const NOOP = () => {}
 interface Props {
     events: eventWithTime[]
     onPlayerTimeChange?: (timestamp: number) => void
+    onPrevious?: () => void
+    onNext?: () => void
 }
 
 export function Player(props: Props) {
@@ -211,6 +220,14 @@ export function Player(props: Props) {
                             <FaBackward onClick={seekBack} />
                             {formatTime(currentTime)} /{' '}
                             {formatTime(meta.totalTime)}
+                        </div>
+                        <div style={{ justifyContent: 'center' }}>
+                            {props.onPrevious && (
+                                <FaStepBackward onClick={props.onPrevious} />
+                            )}
+                            {props.onNext && (
+                                <FaStepForward onClick={props.onNext} />
+                            )}
                         </div>
                         <div style={{ justifyContent: 'flex-end' }}>
                             {[1, 2, 4, 8, 16].map((speedToggle) => (

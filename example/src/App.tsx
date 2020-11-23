@@ -52,7 +52,7 @@ const App = () => {
       <br />
 
       <div style={{ height: '80vh', width: '90vw' }}>
-        {events.length > 0 && <Player events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} />}
+        {events.length > 0 && <Player events={events} key={activeRecording.value} onPlayerTimeChange={setCurrentPlayerTime} onNext={() => {}} />}
       </div>
     </div>
   )
