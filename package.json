@@ -8,6 +8,7 @@
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
+  "homepage": "https://posthog.github.io/posthog-react-rrweb-player/",
   "engines": {
     "node": ">=10"
   },
@@ -15,6 +16,7 @@
     "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
     "start": "microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
     "prepare": "run-s build",
+    "postpublish": "yarn run deploy",
     "test": "run-s test:unit test:lint test:build",
     "test:build": "run-s build",
     "test:lint": "eslint .",

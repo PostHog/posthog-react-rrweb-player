@@ -37,7 +37,7 @@ const App = () => {
   }, [recording])
 
   const eventIndex: EventIndex = useMemo(() => new EventIndex(events), [events])
-  const [pageEvent, atPageIndex] = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
+  const [_, atPageIndex] = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
   const pageVisitEvents = useMemo(() => eventIndex.pageChangeEvents(), [eventIndex])
 
   return (
@@ -61,8 +61,6 @@ const App = () => {
           value={recording}
           onChange={(recording) => setRecording(recording as any)}
         />
-
-        <pre>{JSON.stringify(pageEvent)}</pre>
       </div>
 
       <ul style={{ width: '50vw' }}>
