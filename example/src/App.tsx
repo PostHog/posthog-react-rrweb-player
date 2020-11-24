@@ -13,7 +13,9 @@ const RECORDINGS = [
   makeOption('docs.json'),
   makeOption('local-docs.json'),
   makeOption('homepage.json'),
-  makeOption('mobile-homepage.json')
+  makeOption('mobile-homepage.json'),
+  makeOption('wide-layout.json'),
+  makeOption('with-pageviews.json')
 ]
 
 const App = () => {
