@@ -22,13 +22,17 @@ export function PlayerFrame({ replayer, frame }: Props) {
     }, [replayer])
 
     const windowResize = () => {
-        updatePlayerDimensions(replayDimensionRef.current!)
+        updatePlayerDimensions(replayDimensionRef.current)
     }
 
     // :TRICKY: Scale down the iframe and try to position it vertically
     const updatePlayerDimensions = (
-        replayDimensions: viewportResizeDimention
+        replayDimensions: viewportResizeDimention | undefined
     ) => {
+        if (!replayDimensions) {
+            return
+        }
+
         replayDimensionRef.current = replayDimensions
         const {
             width,
