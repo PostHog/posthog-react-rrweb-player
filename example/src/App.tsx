@@ -7,13 +7,13 @@ import { eventWithTime } from 'rrweb/typings/types'
 
 import 'posthog-react-rrweb-player/dist/index.css'
 
-const makeOption = (value: string) => ({ value, label: value })
+const makeOption = (label: string) => ({ value: window.location.pathname + label, label })
 
 const RECORDINGS = [
-  makeOption('/docs.json'),
-  makeOption('/local-docs.json'),
-  makeOption('/homepage.json'),
-  makeOption('/mobile-homepage.json')
+  makeOption('docs.json'),
+  makeOption('local-docs.json'),
+  makeOption('homepage.json'),
+  makeOption('mobile-homepage.json')
 ]
 
 const App = () => {
