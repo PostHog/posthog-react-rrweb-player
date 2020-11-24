@@ -83,6 +83,7 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             replayer.current = new Replayer(props.events, {
                 root: frame.current,
                 skipInactive: true,
+                triggerFocus: false,
                 speed
             })
 
@@ -146,11 +147,7 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === ' ') {
-            if (playing) {
-                pause()
-            } else {
-                play()
-            }
+            togglePlayPause()
             event.preventDefault()
         } else if (event.key === 'ArrowLeft') {
             seek(currentTime - JUMP_TIME_MS / 2)
@@ -171,14 +168,31 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
         replayer.current!.pause()
     }
 
-    const seek = (time: number) => {
+    const togglePlayPause = () => {
+        if (!playing && currentTime >= meta.totalTime) {
+            seek(0, { forcePlay: true })
+        } else if (playing) {
+            pause()
+        } else {
+            play()
+        }
+    }
+
+    const seek = (
+        time: number,
+        { forcePlay }: { forcePlay?: boolean } = {}
+    ) => {
         time = Math.max(Math.min(time, meta.totalTime), 0)
         replayer.current!.play(time)
         setCurrentTimeDebounced(time)
         onPlayerTimeChangeDebounced(time)
         setSkipping(false)
         if (!playing) {
-            replayer.current!.pause()
+            if (forcePlay) {
+                setPlaying(true)
+            } else {
+                replayer.current!.pause()
+            }
         }
     }
 
@@ -201,7 +215,7 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             onKeyDown={handleKeyDown}
             tabIndex={0}
         >
-            <div className='ph-rrweb-player' onClick={playing ? pause : play}>
+            <div className='ph-rrweb-player' onClick={togglePlayPause}>
                 <PlayerFrame replayer={replayer.current} frame={frame} />
                 <div className='ph-rrweb-overlay'>
                     {skipping && (
@@ -227,12 +241,12 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                     <div>
                         {playing ? (
                             <IconPause
-                                onClick={pause}
+                                onClick={togglePlayPause}
                                 className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
                             />
                         ) : (
                             <IconPlay
-                                onClick={play}
+                                onClick={togglePlayPause}
                                 className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
                             />
                         )}
