@@ -28,7 +28,7 @@ export class EventIndex {
         playerTime: number
     ): [PageMetadata, number] | [null, -1] => {
         let index = this.pageChangeEvents().findIndex(
-            (event) => event.playerTime >= playerTime
+            (event) => event.playerTime > playerTime
         )
 
         if (index === 0) {
