@@ -4,7 +4,7 @@
   "description": "React-based player for rrweb",
   "author": "macobo",
   "license": "MIT",
-  "repository": "macobo/posthog-react-rrweb-player",
+  "repository": "posthog/posthog-react-rrweb-player",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
