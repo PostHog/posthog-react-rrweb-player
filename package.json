@@ -26,6 +26,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
+    "antd": "^4.1.1",
     "react": "^16.0.0"
   },
   "devDependencies": {
@@ -39,6 +40,7 @@
     "@types/react-transition-group": "^4.4.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
+    "antd": "^4.1.1",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",

@@ -6,6 +6,7 @@ import Select from 'react-select'
 import { eventWithTime } from 'rrweb/typings/types'
 
 import 'posthog-react-rrweb-player/dist/index.css'
+import '../node_modules/antd/dist/antd.css'
 
 const makeOption = (label: string) => ({ value: window.location.pathname + label, label })
 
@@ -69,7 +70,7 @@ const App = () => {
 
       <ul style={{ width: '50vw' }}>
         {pageVisitEvents.map((event, index) => (
-          <li>
+          <li key={index}>
             <button onClick={() => playerRef.current && playerRef.current.seek(event.playerTime)}>
                {formatTime(event.playerTime)} - Visited {event.href}
             </button>
