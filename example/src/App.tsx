@@ -52,8 +52,8 @@ const App = () => {
             events={events}
             key={activeRecording.value}
             onPlayerTimeChange={setCurrentPlayerTime}
-            onNext={() => {}}
-            onPrevious={() => {}}
+            onNext={() => {console.log('next recording...')}}
+            onPrevious={() => {console.log('previous recording...')}}
           />
         )}
       </div>

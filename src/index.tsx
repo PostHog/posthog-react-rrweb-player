@@ -25,6 +25,8 @@ import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
+import { Tooltip } from 'antd'
+
 import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
@@ -33,6 +35,7 @@ export { EventIndex } from './eventIndex'
 export { formatTime } from './time'
 
 const JUMP_TIME_MS = 8_000
+const PLAYBACK_SPEEDS = [1, 2, 4, 8, 16]
 const NOOP = () => {}
 
 interface Props {
@@ -145,7 +148,9 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
         }
     }
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const handleKeyDown = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): void => {
         if (event.key === ' ') {
             togglePlayPause()
             event.preventDefault()
@@ -155,6 +160,17 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             seek(currentTime + JUMP_TIME_MS / 2)
         } else if (event.key === 'f') {
             toggleFullScreen()
+        } else if (event.key === 'a') {
+            props.onPrevious && props.onPrevious()
+        } else if (event.key === 'd') {
+            props.onNext && props.onNext()
+        } else {
+            // Playback speeds shortcuts
+            for (let i = 0; i < PLAYBACK_SPEEDS.length; i++) {
+                if (event.key === (i + 1).toString()) {
+                    setSpeed(PLAYBACK_SPEEDS[i])
+                }
+            }
         }
     }
 
@@ -239,18 +255,28 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                 </div>
                 <div className='ph-rrweb-controller'>
                     <div>
-                        {playing ? (
-                            <IconPause
-                                onClick={togglePlayPause}
-                                className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
-                            />
-                        ) : (
-                            <IconPlay
-                                onClick={togglePlayPause}
-                                className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
-                            />
-                        )}
-                        <IconSeekBack onClick={seekBack} />
+                        <Tooltip title='Play/pause (space)'>
+                            <span>
+                                {playing ? (
+                                    <IconPause
+                                        onClick={togglePlayPause}
+                                        className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
+                                    />
+                                ) : (
+                                    <IconPlay
+                                        onClick={togglePlayPause}
+                                        className='ph-rrweb-controller-icon ph-rrweb-controller-icon-play-pause'
+                                    />
+                                )}
+                            </span>
+                        </Tooltip>
+                        <Tooltip
+                            title={`Back ${JUMP_TIME_MS} secs (← left arrow)`}
+                        >
+                            <span>
+                                <IconSeekBack onClick={seekBack} />
+                            </span>
+                        </Tooltip>
                         <span className='ph-rrweb-timestamp'>
                             {formatTime(currentTime)} /{' '}
                             {formatTime(meta.totalTime)}
@@ -258,30 +284,53 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                     </div>
                     <div style={{ justifyContent: 'center' }}>
                         {props.onPrevious && (
-                            <IconStepBackward onClick={props.onPrevious} />
+                            <Tooltip title='Previous recording (a)'>
+                                <span>
+                                    <IconStepBackward
+                                        onClick={props.onPrevious}
+                                    />
+                                </span>
+                            </Tooltip>
                         )}
                         {props.onNext && (
-                            <IconStepForward onClick={props.onNext} />
+                            <Tooltip title='Next recording (d)'>
+                                <span>
+                                    <IconStepForward onClick={props.onNext} />
+                                </span>
+                            </Tooltip>
                         )}
                     </div>
                     <div style={{ justifyContent: 'flex-end' }}>
-                        {[1, 2, 4, 8, 16].map((speedToggle) => (
-                            <span
-                                key={speedToggle}
-                                className='ph-rrweb-speed-toggle'
-                                style={{
-                                    fontWeight:
-                                        speedToggle === speed
-                                            ? 'bold'
-                                            : 'normal'
-                                }}
-                                onClick={() => setSpeed(speedToggle)}
-                            >
-                                {speedToggle}x
-                            </span>
+                        {PLAYBACK_SPEEDS.map((speedToggle, index) => (
+                            <React.Fragment key={speedToggle}>
+                                <Tooltip
+                                    title={`${speedToggle}x speed (${
+                                        index + 1
+                                    })`}
+                                >
+                                    <span
+                                        className='ph-rrweb-speed-toggle'
+                                        style={{
+                                            fontWeight:
+                                                speedToggle === speed
+                                                    ? 'bold'
+                                                    : 'normal'
+                                        }}
+                                        onClick={() => setSpeed(speedToggle)}
+                                    >
+                                        {speedToggle}x
+                                    </span>
+                                </Tooltip>
+                            </React.Fragment>
                         ))}
                         {screenfull.isEnabled && (
-                            <IconFullscreen onClick={toggleFullScreen} />
+                            <Tooltip title='Full screen (f)'>
+                                <span>
+                                    <IconFullscreen
+                                        onClick={toggleFullScreen}
+                                    />
+                                </span>
+                            </Tooltip>
                         )}
                     </div>
                 </div>
