@@ -1,3 +1,5 @@
+@import "../node_modules/rc-tooltip/assets/bootstrap.css";
+
 .ph-rrweb-wrapper {
   height: 100%;
   width: 100%;
@@ -58,7 +60,7 @@
   display: flex;
 }
 
-.ph-rrweb-controller-icon-play-pause { 
+.ph-rrweb-controller-icon-play-pause {
   margin-right: 0px;
 }
 
@@ -126,4 +128,12 @@
   height: 48px;
   width: 48px;
   display: flex;
+}
+
+.rc-tooltip-placement-top {
+  padding: 14px 0 0px 0;
+}
+
+.rc-tooltip-arrow {
+  display: none;
 }

@@ -1,10 +1,10 @@
 {
   "name": "posthog-react-rrweb-player",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "React-based player for rrweb",
   "author": "macobo",
   "license": "MIT",
-  "repository": "macobo/posthog-react-rrweb-player",
+  "repository": "posthog/posthog-react-rrweb-player",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
@@ -65,6 +65,7 @@
   ],
   "dependencies": {
     "rc-slider": "^9.6.2",
+    "rc-tooltip": "^5.0.1",
     "react-transition-group": "^4.4.1",
     "rrweb": "^0.9.9",
     "screenfull": "^5.0.2",

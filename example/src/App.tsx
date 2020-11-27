@@ -51,8 +51,8 @@ const App = () => {
             events={events}
             key={activeRecording.value}
             onPlayerTimeChange={setCurrentPlayerTime}
-            onNext={() => {}}
-            onPrevious={() => {}}
+            onNext={() => {console.log('next recording...')}}
+            onPrevious={() => {console.log('previous recording...')}}
           />
         )}
       </div>
@@ -69,7 +69,7 @@ const App = () => {
 
       <ul style={{ width: '50vw' }}>
         {pageVisitEvents.map((event, index) => (
-          <li>
+          <li key={index}>
             <button onClick={() => playerRef.current && playerRef.current.seek(event.playerTime)}>
                {formatTime(event.playerTime)} - Visited {event.href}
             </button>
