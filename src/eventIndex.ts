@@ -70,7 +70,7 @@ export class EventIndex {
             if ('width' in event.data && 'height' in event.data) {
                 const { width, height } = event.data
                 return {
-                    size: `${width}x${height}`,
+                    size: `${width} x ${height}`,
                     playerTime: event.timestamp - this.baseTime
                 }
             }
