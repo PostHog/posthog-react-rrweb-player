@@ -155,9 +155,9 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             togglePlayPause()
             event.preventDefault()
         } else if (event.key === 'ArrowLeft') {
-            seek(currentTime - JUMP_TIME_MS / 2)
+            seek(currentTime - JUMP_TIME_MS)
         } else if (event.key === 'ArrowRight') {
-            seek(currentTime + JUMP_TIME_MS / 2)
+            seek(currentTime + JUMP_TIME_MS)
         } else if (event.key === 'f') {
             toggleFullScreen()
         } else if (event.key === 'a') {
