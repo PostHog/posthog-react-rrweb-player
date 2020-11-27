@@ -18,7 +18,6 @@
     "@types/react": "link:../node_modules/@types/react",
     "@types/react-dom": "link:../node_modules/@types/react-dom",
     "@types/react-select": "^3.0.26",
-    "antd": "^4.8.5",
     "posthog-react-rrweb-player": "link:..",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",

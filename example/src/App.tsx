@@ -6,7 +6,6 @@ import Select from 'react-select'
 import { eventWithTime } from 'rrweb/typings/types'
 
 import 'posthog-react-rrweb-player/dist/index.css'
-import '../node_modules/antd/dist/antd.css'
 
 const makeOption = (label: string) => ({ value: window.location.pathname + label, label })
 

@@ -25,7 +25,7 @@ import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
-import { Tooltip } from 'antd'
+import Tooltip from 'rc-tooltip'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
@@ -255,7 +255,11 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                 </div>
                 <div className='ph-rrweb-controller'>
                     <div>
-                        <Tooltip title='Play/pause (space)'>
+                        <Tooltip
+                            placement='top'
+                            overlayInnerStyle={{ minHeight: 'auto' }}
+                            overlay='Play/pause (space)'
+                        >
                             <span>
                                 {playing ? (
                                     <IconPause
@@ -271,7 +275,11 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                             </span>
                         </Tooltip>
                         <Tooltip
-                            title={`Back ${JUMP_TIME_MS} secs (← left arrow)`}
+                            placement='top'
+                            overlayInnerStyle={{ minHeight: 'auto' }}
+                            overlay={`Back ${
+                                JUMP_TIME_MS / 1000
+                            }s (← left arrow)`}
                         >
                             <span>
                                 <IconSeekBack onClick={seekBack} />
@@ -284,7 +292,11 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                     </div>
                     <div style={{ justifyContent: 'center' }}>
                         {props.onPrevious && (
-                            <Tooltip title='Previous recording (a)'>
+                            <Tooltip
+                                placement='top'
+                                overlayInnerStyle={{ minHeight: 'auto' }}
+                                overlay='Previous recording (a)'
+                            >
                                 <span>
                                     <IconStepBackward
                                         onClick={props.onPrevious}
@@ -293,7 +305,11 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                             </Tooltip>
                         )}
                         {props.onNext && (
-                            <Tooltip title='Next recording (d)'>
+                            <Tooltip
+                                placement='top'
+                                overlayInnerStyle={{ minHeight: 'auto' }}
+                                overlay='Next recording (d)'
+                            >
                                 <span>
                                     <IconStepForward onClick={props.onNext} />
                                 </span>
@@ -304,7 +320,9 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                         {PLAYBACK_SPEEDS.map((speedToggle, index) => (
                             <React.Fragment key={speedToggle}>
                                 <Tooltip
-                                    title={`${speedToggle}x speed (${
+                                    placement='top'
+                                    overlayInnerStyle={{ minHeight: 'auto' }}
+                                    overlay={`${speedToggle}x speed (${
                                         index + 1
                                     })`}
                                 >
@@ -324,7 +342,11 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                             </React.Fragment>
                         ))}
                         {screenfull.isEnabled && (
-                            <Tooltip title='Full screen (f)'>
+                            <Tooltip
+                                placement='top'
+                                overlayInnerStyle={{ minHeight: 'auto' }}
+                                overlay='Full screen (f)'
+                            >
                                 <span>
                                     <IconFullscreen
                                         onClick={toggleFullScreen}

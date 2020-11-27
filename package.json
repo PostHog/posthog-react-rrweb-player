@@ -26,7 +26,6 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "antd": "^4.1.1",
     "react": "^16.0.0"
   },
   "devDependencies": {
@@ -40,7 +39,6 @@
     "@types/react-transition-group": "^4.4.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
-    "antd": "^4.1.1",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
@@ -67,6 +65,7 @@
   ],
   "dependencies": {
     "rc-slider": "^9.6.2",
+    "rc-tooltip": "^5.0.1",
     "react-transition-group": "^4.4.1",
     "rrweb": "^0.9.9",
     "screenfull": "^5.0.2",
