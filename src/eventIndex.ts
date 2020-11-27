@@ -1,8 +1,15 @@
 import { eventWithTime } from 'rrweb/typings/types'
 
-export interface PageMetadata {
-    href: string
+interface Metadata {
     playerTime: number
+}
+
+export interface PageMetadata extends Metadata {
+    href: string
+}
+
+export interface SizeMetadata extends Metadata {
+    size: string
 }
 
 export interface LibCustomEvent {
@@ -26,22 +33,16 @@ export class EventIndex {
 
     getPageMetadata = (
         playerTime: number
-    ): [PageMetadata, number] | [null, -1] => {
-        let index = this.pageChangeEvents().findIndex(
-            (event) => event.playerTime > playerTime
-        )
+    ): [PageMetadata, number] | [null, -1] =>
+        this._findCurrent(playerTime, this.pageChangeEvents())
 
-        if (index === 0) {
-            return [this.pageChangeEvents()[0], 0]
-        } else if (index === -1) {
-            index = this.pageChangeEvents().length - 1
-            return [this.pageChangeEvents()[index], index]
-        }
-        return [this.pageChangeEvents()[index - 1], index - 1]
-    }
+    getSizeMetadata = (
+        playerTime: number
+    ): [SizeMetadata, number] | [null, -1] =>
+        this._findCurrent(playerTime, this.sizeEvents())
 
-    pageChangeEvents = (): PageMetadata[] => {
-        return this._filterBy('href', (event) => {
+    pageChangeEvents = (): PageMetadata[] =>
+        this._filterBy('href', (event) => {
             if ('href' in event.data) {
                 return {
                     href: (event.data as { href: string }).href,
@@ -60,26 +61,52 @@ export class EventIndex {
 
             return null
         })
+
+    sizeEvents = (): SizeMetadata[] =>
+        this._filterBy('size', (event) => {
+            if ('width' in event.data && 'height' in event.data) {
+                const { width, height } = event.data
+                return {
+                    size: `${width}x${height}`,
+                    playerTime: event.timestamp - this.baseTime
+                }
+            }
+            return null
+        })
+
+    _findCurrent = <T extends Metadata>(
+        playerTime: number,
+        events: T[]
+    ): [T, number] | [null, -1] => {
+        let index = events.findIndex((event) => event.playerTime > playerTime)
+
+        if (index === 0) {
+            return [events[0], 0]
+        } else if (index === -1) {
+            index = events.length - 1
+            return [events[index], index]
+        }
+        return [events[index - 1], index - 1]
     }
 
-    _filterBy = (
+    _filterBy = <T extends Record<string, V>, V>(
         dataKey: string,
-        transformer: (e: eventWithTime) => PageMetadata | null
-    ): PageMetadata[] => {
+        transformer: (e: eventWithTime) => T | null
+    ): T[] => {
         if (!this._filterByCaches[dataKey]) {
-            let lastHref: string | undefined
+            let lastValueKey: V | undefined
 
             this._filterByCaches[dataKey] = this.events
                 .map(transformer)
-                .filter((value) => !!value)
-                .filter(({ href }: PageMetadata) => {
-                    if (href !== lastHref) {
-                        lastHref = href
+                .filter((value: T | null) => !!value)
+                .filter((value: T) => {
+                    if (value[dataKey] !== lastValueKey) {
+                        lastValueKey = value[dataKey]
                         return true
                     }
                     return false
                 })
         }
-        return this._filterByCaches[dataKey] as PageMetadata[]
+        return this._filterByCaches[dataKey] as T[]
     }
 }
