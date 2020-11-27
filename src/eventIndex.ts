@@ -31,6 +31,9 @@ export class EventIndex {
         this._filterByCaches = {}
     }
 
+    getDuration = (): number =>
+        this.events[this.events.length - 1].timestamp - this.events[0].timestamp
+
     getPageMetadata = (
         playerTime: number
     ): [PageMetadata, number] | [null, -1] =>
