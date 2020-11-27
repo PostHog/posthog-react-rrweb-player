@@ -19,8 +19,19 @@ import MyComponent from 'posthog-react-rrweb-player'
 import 'posthog-react-rrweb-player/dist/index.css'
 
 class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
+    render() {
+        return <MyComponent />
+    }
 }
+```
+
+## Developing locally
+
+To develop locally, you can run the following commands and an example app will be launched on port 3000.
+
+```bash
+yarn # only the first time to install dependencies
+yarn start # to run the base component
+cd example
+yarn start # to run the example project
 ```
