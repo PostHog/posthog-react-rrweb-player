@@ -68,7 +68,7 @@ export class EventIndex {
         })
 
     recordingMetadata = (): RecordingMetadata[] =>
-        this._filterBy('size', (event) => {
+        this._filterBy('resolution', (event) => {
             if ('width' in event.data && 'height' in event.data) {
                 const { width, height } = event.data
                 return {
