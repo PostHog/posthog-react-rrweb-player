@@ -8,8 +8,10 @@ export interface PageMetadata extends Metadata {
     href: string
 }
 
-export interface SizeMetadata extends Metadata {
-    size: string
+export interface RecordingMetadata extends Metadata {
+    resolution: string
+    width: number
+    height: number
 }
 
 export interface LibCustomEvent {
@@ -39,10 +41,10 @@ export class EventIndex {
     ): [PageMetadata, number] | [null, -1] =>
         this._findCurrent(playerTime, this.pageChangeEvents())
 
-    getSizeMetadata = (
+    getRecordingMetadata = (
         playerTime: number
-    ): [SizeMetadata, number] | [null, -1] =>
-        this._findCurrent(playerTime, this.sizeEvents())
+    ): [RecordingMetadata, number] | [null, -1] =>
+        this._findCurrent(playerTime, this.recordingMetadata())
 
     pageChangeEvents = (): PageMetadata[] =>
         this._filterBy('href', (event) => {
@@ -65,12 +67,14 @@ export class EventIndex {
             return null
         })
 
-    sizeEvents = (): SizeMetadata[] =>
+    recordingMetadata = (): RecordingMetadata[] =>
         this._filterBy('size', (event) => {
             if ('width' in event.data && 'height' in event.data) {
                 const { width, height } = event.data
                 return {
-                    size: `${width} x ${height}`,
+                    resolution: `${width} x ${height}`,
+                    height: height,
+                    width: width,
                     playerTime: event.timestamp - this.baseTime
                 }
             }
