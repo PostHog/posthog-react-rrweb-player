@@ -41,7 +41,7 @@ const App = () => {
 
   const eventIndex: EventIndex = useMemo(() => new EventIndex(events), [events])
   const [pageEvent, atPageIndex] = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
-  const [sizeEvent] = useMemo(() => eventIndex.getSizeMetadata(playerTime), [eventIndex, playerTime])
+  const [sizeEvent] = useMemo(() => eventIndex.getPageMetadata(playerTime), [eventIndex, playerTime])
   const pageVisitEvents = useMemo(() => eventIndex.pageChangeEvents(), [eventIndex])
 
   return (
