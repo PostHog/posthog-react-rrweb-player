@@ -1,6 +1,6 @@
 {
   "name": "posthog-react-rrweb-player",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "React-based player for rrweb",
   "author": "macobo",
   "license": "MIT",
