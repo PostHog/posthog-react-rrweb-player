@@ -31,7 +31,7 @@ import './styles.css'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
 
-export { EventIndex } from './eventIndex'
+export { EventIndex, findCurrent } from './eventIndex'
 export { formatTime } from './time'
 
 const JUMP_TIME_MS = 8_000

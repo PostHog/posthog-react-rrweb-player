@@ -1,6 +1,6 @@
 import { eventWithTime } from 'rrweb/typings/types'
 
-interface Metadata {
+export interface Metadata {
     playerTime: number
 }
 
@@ -39,12 +39,12 @@ export class EventIndex {
     getPageMetadata = (
         playerTime: number
     ): [PageMetadata, number] | [null, -1] =>
-        this._findCurrent(playerTime, this.pageChangeEvents())
+        findCurrent(playerTime, this.pageChangeEvents())
 
     getRecordingMetadata = (
         playerTime: number
     ): [RecordingMetadata, number] | [null, -1] =>
-        this._findCurrent(playerTime, this.recordingMetadata())
+        findCurrent(playerTime, this.recordingMetadata())
 
     pageChangeEvents = (): PageMetadata[] =>
         this._filterBy('href', (event) => {
@@ -81,21 +81,6 @@ export class EventIndex {
             return null
         })
 
-    _findCurrent = <T extends Metadata>(
-        playerTime: number,
-        events: T[]
-    ): [T, number] | [null, -1] => {
-        let index = events.findIndex((event) => event.playerTime > playerTime)
-
-        if (index === 0) {
-            return [events[0], 0]
-        } else if (index === -1) {
-            index = events.length - 1
-            return [events[index], index]
-        }
-        return [events[index - 1], index - 1]
-    }
-
     _filterBy = <T extends Record<string, V>, V>(
         dataKey: string,
         transformer: (e: eventWithTime) => T | null
@@ -116,4 +101,19 @@ export class EventIndex {
         }
         return this._filterByCaches[dataKey] as T[]
     }
+}
+
+export const findCurrent = <T extends Metadata>(
+    playerTime: number,
+    events: T[]
+): [T, number] | [null, -1] => {
+    let index = events.findIndex((event) => event.playerTime > playerTime)
+
+    if (index === 0) {
+        return [events[0], 0]
+    } else if (index === -1) {
+        index = events.length - 1
+        return [events[index], index]
+    }
+    return [events[index - 1], index - 1]
 }
