@@ -19,7 +19,7 @@ import {
 import { Replayer } from 'rrweb'
 import screenfull from 'screenfull'
 import useLocalStorageState from 'use-local-storage-state'
-import { useDebouncedCallback } from 'use-debounce/lib'
+import { useDebouncedCallback } from 'use-debounce'
 import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 
 import { formatTime } from './time'
