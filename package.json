@@ -1,5 +1,5 @@
 {
-  "name": "posthog-react-rrweb-player",
+  "name": "@posthog/react-rrweb-player",
   "version": "1.0.12",
   "description": "React-based player for rrweb",
   "author": "macobo",
