@@ -35,7 +35,7 @@ export { EventIndex, findCurrent } from './eventIndex'
 export { formatTime } from './time'
 
 const JUMP_TIME_MS = 8_000
-const PLAYBACK_SPEEDS = [1, 2, 4, 8, 16]
+const PLAYBACK_SPEEDS = [0.5, 1, 2, 4, 8, 16]
 const NOOP = () => {}
 
 interface Props {
