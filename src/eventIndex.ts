@@ -1,4 +1,4 @@
-import { eventWithTime } from 'posthog-rrweb/typings/types'
+import { eventWithTime } from '@posthog/rrweb/typings/types'
 
 export interface Metadata {
     playerTime: number
