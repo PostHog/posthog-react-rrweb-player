@@ -1,6 +1,6 @@
 {
   "name": "@posthog/react-rrweb-player",
-  "version": "1.1.1",
+  "version": "1.1.2-beta",
   "description": "React-based player for rrweb",
   "author": "macobo",
   "license": "MIT",
@@ -64,10 +64,10 @@
     "dist"
   ],
   "dependencies": {
+    "@posthog/rrweb": "0.9.15-beta",
     "rc-slider": "^9.6.2",
     "rc-tooltip": "^5.0.1",
     "react-transition-group": "^4.4.1",
-    "rrweb": "^0.9.14",
     "screenfull": "^5.0.2",
     "use-debounce": "^5.2.1",
     "use-local-storage-state": "^6.0.0"

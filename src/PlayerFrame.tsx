@@ -1,6 +1,6 @@
 import React, { RefObject, useEffect, useRef } from 'react'
-import { Replayer } from 'rrweb'
-import { viewportResizeDimention } from 'rrweb/typings/types'
+import { Replayer } from '@posthog/rrweb'
+import { viewportResizeDimension } from '@posthog/rrweb/typings/types'
 
 interface Props {
     replayer: Replayer | null
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function PlayerFrame({ replayer, frame }: Props) {
-    const replayDimensionRef = useRef<viewportResizeDimention>()
+    const replayDimensionRef = useRef<viewportResizeDimension>()
 
     useEffect(() => {
         if (!replayer) {
@@ -27,7 +27,7 @@ export function PlayerFrame({ replayer, frame }: Props) {
 
     // :TRICKY: Scale down the iframe and try to position it vertically
     const updatePlayerDimensions = (
-        replayDimensions: viewportResizeDimention | undefined
+        replayDimensions: viewportResizeDimension | undefined
     ) => {
         if (!replayDimensions) {
             return
