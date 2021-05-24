@@ -16,11 +16,11 @@ import {
     IconFullscreen,
     IconPause
 } from './icons'
-import { Replayer } from 'rrweb'
+import { Replayer } from 'posthog-rrweb'
 import screenfull from 'screenfull'
 import useLocalStorageState from 'use-local-storage-state'
 import { useDebouncedCallback } from 'use-debounce'
-import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
+import { eventWithTime, playerMetaData } from 'posthog-rrweb/typings/types'
 
 import { formatTime } from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
@@ -29,7 +29,7 @@ import Tooltip from 'rc-tooltip'
 
 import './styles.css'
 import 'rc-slider/assets/index.css'
-import 'rrweb/dist/rrweb.min.css'
+import 'posthog-rrweb/dist/rrweb.min.css'
 
 export { EventIndex, findCurrent } from './eventIndex'
 export { formatTime } from './time'
