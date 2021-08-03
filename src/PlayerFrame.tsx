@@ -1,6 +1,6 @@
 import React, { RefObject, useEffect, useRef } from 'react'
-import { Replayer } from '@posthog/rrweb'
-import { viewportResizeDimension } from '@posthog/rrweb/typings/types'
+import { Replayer } from 'rrweb'
+import { viewportResizeDimension } from 'rrweb/typings/types'
 
 interface Props {
     replayer: Replayer | null

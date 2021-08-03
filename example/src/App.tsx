@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { EventIndex, formatTime, Player, PlayerRef } from '@posthog/react-rrweb-player'
 import useLocalStorageState from 'use-local-storage-state'
 import Select from 'react-select'
-import { eventWithTime } from '@posthog/rrweb/typings/types'
+import { eventWithTime } from 'rrweb/typings/types'
 
 import '@posthog/react-rrweb-player/dist/index.css'
 import 'rc-tooltip/assets/bootstrap.css'
