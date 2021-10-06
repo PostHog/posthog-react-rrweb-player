@@ -34,10 +34,7 @@ export class EventIndex {
     }
 
     getDuration = (): number =>
-        this.events.length > 0
-            ? this.events[this.events.length - 1].timestamp -
-              this.events[0].timestamp
-            : 0
+        this.events[this.events.length - 1].timestamp - this.events[0].timestamp
 
     getPageMetadata = (
         playerTime: number
