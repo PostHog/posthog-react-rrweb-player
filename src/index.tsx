@@ -110,6 +110,19 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
         }
     }, [])
 
+    useEffect(() => {
+        if (frame.current && replayer.current) {
+            // Only add the events that don't already exist in replayer's context
+            const numCurrentEvents =
+                replayer.current?.service.state.context.events.length ?? 0
+            const eventsToAdd = props.events.slice(numCurrentEvents) ?? []
+            eventsToAdd.forEach((event) => replayer.current?.addEvent(event))
+
+            const meta = replayer.current.getMetaData()
+            setMeta(meta)
+        }
+    }, [props.events.length])
+
     useEffect((): any => {
         stopTimer()
 
