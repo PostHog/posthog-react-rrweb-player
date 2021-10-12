@@ -27,3 +27,7 @@ export function formatTime(ms: number): string {
     }
     return `${padZero(minute)}:${padZero(second)}`
 }
+
+export function convertSecondsToMillis(s: number): number {
+    return s * 1000
+}
