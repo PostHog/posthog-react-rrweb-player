@@ -11,8 +11,6 @@ import Slider from 'rc-slider/lib/Slider'
 import {
     IconPlay,
     IconSeekBack,
-    IconStepBackward,
-    IconStepForward,
     IconFullscreen,
     IconPause
 } from './icons'
@@ -27,7 +25,7 @@ import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
 import Tooltip from 'rc-tooltip'
 
-import './styles.css'
+import './styles.scss'
 import 'rc-slider/assets/index.css'
 import 'rrweb/dist/rrweb.min.css'
 
@@ -41,8 +39,8 @@ const NOOP = () => {}
 interface Props {
     events: eventWithTime[]
     onPlayerTimeChange?: (playerTime: number) => void
-    onPrevious?: () => void
-    onNext?: () => void
+    onPrevious?: () => void // Deprecated
+    onNext?: () => void // Deprecated
     isBuffering?: boolean
     duration?: number // in seconds
 }
@@ -53,14 +51,7 @@ export interface PlayerRef {
 }
 
 export const Player = forwardRef<PlayerRef, Props>(function Player(
-    {
-        events,
-        onPlayerTimeChange,
-        onPrevious,
-        onNext,
-        isBuffering = false,
-        duration = 0
-    }: Props,
+    { events, onPlayerTimeChange, isBuffering = false, duration = 0 }: Props,
     ref: ForwardedRef<PlayerRef>
 ) {
     const [playing, setPlaying] = useState(true)
@@ -187,10 +178,6 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             seek(currentTime + JUMP_TIME_MS)
         } else if (event.key === 'f') {
             toggleFullScreen()
-        } else if (event.key === 'a') {
-            onPrevious && onPrevious()
-        } else if (event.key === 'd') {
-            onNext && onNext()
         } else {
             // Playback speeds shortcuts
             for (let i = 0; i < PLAYBACK_SPEEDS.length; i++) {
@@ -271,15 +258,6 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                 </div>
             </div>
             <div className='ph-rrweb-bottom'>
-                <div className='ph-rrweb-progress'>
-                    <Slider
-                        value={currentTime}
-                        min={0}
-                        max={meta.totalTime}
-                        step={0.01}
-                        onChange={seek}
-                    />
-                </div>
                 <div className='ph-rrweb-controller'>
                     <div>
                         <Tooltip
@@ -317,29 +295,14 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                             {formatTime(meta.totalTime)}
                         </span>
                     </div>
-                    <div style={{ justifyContent: 'center' }}>
-                        {onPrevious && (
-                            <Tooltip
-                                placement='top'
-                                overlayInnerStyle={{ minHeight: 'auto' }}
-                                overlay='Previous recording (a)'
-                            >
-                                <span>
-                                    <IconStepBackward onClick={onPrevious} />
-                                </span>
-                            </Tooltip>
-                        )}
-                        {onNext && (
-                            <Tooltip
-                                placement='top'
-                                overlayInnerStyle={{ minHeight: 'auto' }}
-                                overlay='Next recording (d)'
-                            >
-                                <span>
-                                    <IconStepForward onClick={onNext} />
-                                </span>
-                            </Tooltip>
-                        )}
+                    <div className='ph-rrweb-progress'>
+                        <Slider
+                            value={currentTime}
+                            min={0}
+                            max={meta.totalTime}
+                            step={0.01}
+                            onChange={seek}
+                        />
                     </div>
                     <div style={{ justifyContent: 'flex-end' }}>
                         {PLAYBACK_SPEEDS.map((speedToggle, index) => (

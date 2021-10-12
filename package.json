@@ -64,10 +64,11 @@
     "dist"
   ],
   "dependencies": {
-    "rrweb": "^1.0.2",
     "rc-slider": "^9.6.2",
     "rc-tooltip": "^5.0.1",
     "react-transition-group": "^4.4.1",
+    "rrweb": "^1.0.2",
+    "sass": "^1.42.1",
     "screenfull": "^5.0.2",
     "use-debounce": "^5.2.1",
     "use-local-storage-state": "^6.0.0"
