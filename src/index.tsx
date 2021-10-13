@@ -22,7 +22,7 @@ import useLocalStorageState from 'use-local-storage-state'
 import { useDebouncedCallback } from 'use-debounce'
 import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 
-import { formatTime } from './time'
+import {formatTime} from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
 import Tooltip from 'rc-tooltip'
@@ -43,6 +43,8 @@ interface Props {
     onPlayerTimeChange?: (playerTime: number) => void
     onPrevious?: () => void
     onNext?: () => void
+    isBuffering?: boolean
+    duration?: number // in milliseconds
 }
 
 export interface PlayerRef {
@@ -51,17 +53,25 @@ export interface PlayerRef {
 }
 
 export const Player = forwardRef<PlayerRef, Props>(function Player(
-    props: Props,
+    {
+        events,
+        onPlayerTimeChange,
+        onPrevious,
+        onNext,
+        isBuffering = false,
+        duration = 0
+    }: Props,
     ref: ForwardedRef<PlayerRef>
 ) {
     const [playing, setPlaying] = useState(true)
     const [skipping, setSkipping] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
-    const [meta, setMeta] = useState<playerMetaData>({
-        startTime: 0,
-        endTime: 0,
-        totalTime: 0
-    })
+    const defaultTime = {
+        startTime: events?.[0]?.timestamp ?? 0,
+        endTime: (events?.[0]?.timestamp ?? 0) + duration,
+        totalTime: duration
+    }
+    const [meta, setMeta] = useState<playerMetaData>(defaultTime)
 
     const [speed, setSpeed] = useLocalStorageState('ph-rrweb-player-speed', 1)
 
@@ -76,14 +86,14 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
     }).callback
 
     const onPlayerTimeChangeDebounced = useDebouncedCallback(
-        props.onPlayerTimeChange || NOOP,
+        onPlayerTimeChange || NOOP,
         300,
         { maxWait: 1000 }
     ).callback
 
     useEffect(() => {
         if (frame.current) {
-            replayer.current = new Replayer(props.events, {
+            replayer.current = new Replayer(events, {
                 root: frame.current,
                 skipInactive: true,
                 triggerFocus: false,
@@ -96,10 +106,11 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
 
             replayer.current.play()
 
-            const meta = replayer.current.getMetaData()
-
             setPlaying(true)
-            setMeta(meta)
+            if (!isBuffering) {
+                const meta = replayer.current.getMetaData()
+                setMeta(meta)
+            }
 
             wrapper.current!.focus()
         }
@@ -109,6 +120,21 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
             replayer.current!.pause()
         }
     }, [])
+
+    useEffect(() => {
+        if (frame.current && replayer.current) {
+            // Only add the events that don't already exist in replayer's context
+            const numCurrentEvents =
+                replayer.current?.service.state.context.events.length ?? 0
+            const eventsToAdd = events.slice(numCurrentEvents) ?? []
+            eventsToAdd.forEach((event) => replayer.current?.addEvent(event))
+
+            if (!isBuffering) {
+                const meta = replayer.current.getMetaData()
+                setMeta(meta)
+            }
+        }
+    }, [events.length])
 
     useEffect((): any => {
         stopTimer()
@@ -161,9 +187,9 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
         } else if (event.key === 'f') {
             toggleFullScreen()
         } else if (event.key === 'a') {
-            props.onPrevious && props.onPrevious()
+            onPrevious && onPrevious()
         } else if (event.key === 'd') {
-            props.onNext && props.onNext()
+            onNext && onNext()
         } else {
             // Playback speeds shortcuts
             for (let i = 0; i < PLAYBACK_SPEEDS.length; i++) {
@@ -291,27 +317,25 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
                         </span>
                     </div>
                     <div style={{ justifyContent: 'center' }}>
-                        {props.onPrevious && (
+                        {onPrevious && (
                             <Tooltip
                                 placement='top'
                                 overlayInnerStyle={{ minHeight: 'auto' }}
                                 overlay='Previous recording (a)'
                             >
                                 <span>
-                                    <IconStepBackward
-                                        onClick={props.onPrevious}
-                                    />
+                                    <IconStepBackward onClick={onPrevious} />
                                 </span>
                             </Tooltip>
                         )}
-                        {props.onNext && (
+                        {onNext && (
                             <Tooltip
                                 placement='top'
                                 overlayInnerStyle={{ minHeight: 'auto' }}
                                 overlay='Next recording (d)'
                             >
                                 <span>
-                                    <IconStepForward onClick={props.onNext} />
+                                    <IconStepForward onClick={onNext} />
                                 </span>
                             </Tooltip>
                         )}
