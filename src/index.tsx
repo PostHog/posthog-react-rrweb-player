@@ -20,7 +20,7 @@ import useLocalStorageState from 'use-local-storage-state'
 import { useDebouncedCallback } from 'use-debounce'
 import { eventWithTime, playerMetaData } from 'rrweb/typings/types'
 
-import {convertSecondsToMillis, formatTime} from './time'
+import {formatTime} from './time'
 import { PlayPauseOverlay } from './PlayPauseOverlay'
 import { PlayerFrame } from './PlayerFrame'
 import Tooltip from 'rc-tooltip'
@@ -42,7 +42,7 @@ interface Props {
     onPrevious?: () => void // Deprecated
     onNext?: () => void // Deprecated
     isBuffering?: boolean
-    duration?: number // in seconds
+    duration?: number // in milliseconds
 }
 
 export interface PlayerRef {
@@ -57,11 +57,10 @@ export const Player = forwardRef<PlayerRef, Props>(function Player(
     const [playing, setPlaying] = useState(true)
     const [skipping, setSkipping] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
-    const durationMs = convertSecondsToMillis(duration)
     const defaultTime = {
         startTime: events?.[0]?.timestamp ?? 0,
-        endTime: (events?.[0]?.timestamp ?? 0) + durationMs,
-        totalTime: durationMs
+        endTime: (events?.[0]?.timestamp ?? 0) + duration,
+        totalTime: duration
     }
     const [meta, setMeta] = useState<playerMetaData>(defaultTime)
 
