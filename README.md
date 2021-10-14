@@ -15,12 +15,26 @@ npm install --save @posthog/react-rrweb-player
 ```tsx
 import React, { Component } from 'react'
 
-import MyComponent from '@posthog/react-rrweb-player'
+import { EventIndex, formatTime, PlayerRef, PlayerContextProvider, PlayerController, PlayerFrame } from '@posthog/react-rrweb-player'
 import '@posthog/react-rrweb-player/dist/index.css'
 
 class Example extends Component {
     render() {
-        return <MyComponent />
+        return (
+            <PlayerContextProvider
+                ref={ref}
+                events={events}
+                key={recording.key}
+                onPlayerTimeChange={() => {}}
+                onNext={() => {}}
+                onPrevious={() => {}}
+                duration={duration}
+                isBuffering={false}
+            >
+                <PlayerFrame />
+                <PlayerController />
+            </PlayerContextProvider>
+        )
     }
 }
 ```
