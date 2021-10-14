@@ -64,6 +64,7 @@ interface PlayerContextProviderProps {
 
 export interface PlayerRef {
     replayer: RefObject<Replayer | null>
+    seek: (playerTime: number) => void
 }
 
 export const PlayerContextProvider = forwardRef<
@@ -322,7 +323,7 @@ export const PlayerContextProvider = forwardRef<
         ]
     )
 
-    useImperativeHandle(ref, () => ({ replayer }))
+    useImperativeHandle(ref, () => ({ replayer, seek }))
 
     return (
         <PlayerContext.Provider value={value}>
