@@ -29,8 +29,6 @@ export function PlayerController(): JSX.Element | null {
         toggleFullScreen
     } = context
 
-    console.log('CURRENT TIME', currentTime)
-
     return (
         <div className='ph-rrweb-bottom'>
             <div className='ph-rrweb-controller'>
