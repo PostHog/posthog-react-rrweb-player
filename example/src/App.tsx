@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { EventIndex, formatTime, Player, PlayerRef } from '@posthog/react-rrweb-player'
+import { EventIndex, formatTime, PlayerRef, PlayerContextProvider, PlayerController, PlayerFrame } from '@posthog/react-rrweb-player'
 import useLocalStorageState from 'use-local-storage-state'
 import Select from 'react-select'
 import { eventWithTime } from 'rrweb/typings/types'
@@ -48,14 +48,23 @@ const App = () => {
     <div>
       <div style={{ height: '80vh', width: '90vw' }}>
         {events.length > 0 && (
-          <Player
-            ref={playerRef}
-            events={events}
-            key={activeRecording.value}
-            onPlayerTimeChange={setCurrentPlayerTime}
-            onNext={() => {console.log('next recording...')}}
-            onPrevious={() => {console.log('previous recording...')}}
-          />
+            <PlayerContextProvider
+                ref={playerRef}
+                events={events}
+                key={activeRecording.value}
+                onPlayerTimeChange={setCurrentPlayerTime}
+                onNext={() => {
+                    console.log('next recording...')
+                }}
+                onPrevious={() => {
+                    console.log('previous recording...')
+                }}
+                duration={events.length > 0 ? (events.slice(-1)[0].timestamp - events[0].timestamp) : 0}
+                isBuffering={false}
+            >
+                <PlayerFrame />
+                <PlayerController />
+            </PlayerContextProvider>
         )}
       </div>
 
