@@ -1,25 +1,37 @@
-import React, { RefObject, useEffect, useRef } from 'react'
-import { Replayer } from 'rrweb'
+import React, { useContext, useEffect, useRef } from 'react'
 import { viewportResizeDimension } from 'rrweb/typings/types'
+import { PlayPauseOverlay } from './PlayPauseOverlay'
+import { PlayerContext } from './PlayerContext'
 
-interface Props {
-    replayer: Replayer | null
-    frame: RefObject<HTMLDivElement>
-}
-
-export function PlayerFrame({ replayer, frame }: Props) {
+export function PlayerFrame() {
     const replayDimensionRef = useRef<viewportResizeDimension>()
 
+    const context = useContext(PlayerContext)
+
+    if (!context) {
+        // PlayerController must be wrapped by a Provider
+        return null
+    }
+
+    const {
+        playing,
+        togglePlayPause,
+        replayer,
+        frame,
+        skipping,
+        setFrameRef
+    } = context
+
     useEffect(() => {
-        if (!replayer) {
+        if (!replayer.current) {
             return
         }
 
-        replayer.on('resize', updatePlayerDimensions)
+        replayer.current!.on('resize', updatePlayerDimensions)
         window.addEventListener('resize', windowResize)
 
         return () => window.removeEventListener('resize', windowResize)
-    }, [replayer])
+    }, [replayer.current])
 
     const windowResize = () => {
         updatePlayerDimensions(replayDimensionRef.current)
@@ -29,15 +41,12 @@ export function PlayerFrame({ replayer, frame }: Props) {
     const updatePlayerDimensions = (
         replayDimensions: viewportResizeDimension | undefined
     ) => {
-        if (!replayDimensions) {
+        if (!replayDimensions || !frame) {
             return
         }
 
         replayDimensionRef.current = replayDimensions
-        const {
-            width,
-            height
-        } = frame.current!.parentElement!.getBoundingClientRect()
+        const { width, height } = frame.parentElement!.getBoundingClientRect()
 
         const scale = Math.min(
             width / replayDimensions.width,
@@ -45,14 +54,27 @@ export function PlayerFrame({ replayer, frame }: Props) {
             1
         )
 
-        replayer!.wrapper.style.transform = `scale(${scale})`
-        frame.current!.style.paddingLeft = `${
+        replayer.current!.wrapper.style.transform = `scale(${scale})`
+        frame.style.paddingLeft = `${
             (width - replayDimensions.width * scale) / 2
         }px`
-        frame.current!.style.paddingTop = `${
+        frame.style.paddingTop = `${
             (height - replayDimensions.height * scale) / 2
         }px`
     }
 
-    return <div ref={frame} />
+    return (
+        <div className='ph-rrweb-player' onClick={togglePlayPause}>
+            <div ref={(ref) => setFrameRef(ref)} />
+            <div className='ph-rrweb-overlay'>
+                {skipping && (
+                    <div className='ph-rrweb-skipping'>
+                        Skipping inactivity...
+                    </div>
+                )}
+
+                <PlayPauseOverlay playing={playing} />
+            </div>
+        </div>
+    )
 }
