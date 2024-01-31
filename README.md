@@ -52,4 +52,4 @@ yarn start # to run the example project
 
 ## Questions?
 
-### [Join our Slack community.](http://posthog.com/slack)
+### [Join our community.](http://posthog.com/questions)
